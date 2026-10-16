@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}خطای سرور{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 40px 0;">
+    <div style="font-size: 120px; font-weight: 900; background: linear-gradient(135deg, #8b5cf6, #06b6d4, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1;">500</div>
+    <h1 style="font-size: 28px; margin: 20px 0;">مشکلی در سرور پیش اومد</h1>
+    <p style="color: #94a3b8; margin-bottom: 30px;">تیم فنی ما در حال بررسیه. لطفاً بعداً دوباره امتحان کن</p>
+    <a href="{% url 'home' %}" class="btn">بازگشت به خانه</a>
+</div>
+{% endblock %}

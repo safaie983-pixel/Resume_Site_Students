@@ -1,0 +1,30 @@
+from django.contrib import admin
+from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+from accounts import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', views.home, name='home'),
+    path('register/', views.register, name='register'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('dashboard/edit/', views.edit_profile, name='edit_profile'),
+    path('dashboard/add-skill/', views.add_skill, name='add_skill'),
+    path('dashboard/add-experience/', views.add_experience, name='add_experience'),
+    path('dashboard/add-education/', views.add_education, name='add_education'),
+    path('dashboard/add-project/', views.add_project, name='add_project'),
+    path('dashboard/add-certificate/', views.add_certificate, name='add_certificate'),
+    path('dashboard/delete-skill/<int:pk>/', views.delete_skill, name='delete_skill'),
+    path('dashboard/delete-experience/<int:pk>/', views.delete_experience, name='delete_experience'),
+    path('dashboard/delete-education/<int:pk>/', views.delete_education, name='delete_education'),
+    path('dashboard/delete-project/<int:pk>/', views.delete_project, name='delete_project'),
+    path('dashboard/delete-certificate/<int:pk>/', views.delete_certificate, name='delete_certificate'),
+    path('u/<str:username>/', views.public_profile, name='public_profile'),
+    path('u/<str:username>/pdf/', views.download_resume_pdf, name='download_resume_pdf'),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

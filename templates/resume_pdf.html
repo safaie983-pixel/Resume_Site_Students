@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @font-face {
+            font-family: 'Vazirmatn';
+            src: url('file:///E:/university-site/static/fonts/Vazirmatn-Regular.ttf');
+        }
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Vazirmatn', Tahoma, sans-serif;
+            direction: rtl;
+            color: #333;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #8b5cf6;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: #1e3a8a;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .header .job-title {
+            color: #8b5cf6;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            color: #1e3a8a;
+            font-size: 15px;
+            font-weight: bold;
+            border-bottom: 2px solid #8b5cf6;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        .info-grid {
+            width: 100%;
+        }
+        .info-item {
+            margin-bottom: 5px;
+            font-size: 11px;
+        }
+        .info-item strong {
+            color: #8b5cf6;
+            display: inline-block;
+            width: 80px;
+        }
+        .skill-item {
+            margin-bottom: 8px;
+        }
+        .skill-name {
+            display: inline-block;
+            width: 140px;
+            font-weight: bold;
+            color: #06b6d4;
+        }
+        .skill-bar {
+            display: inline-block;
+            width: 200px;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            position: relative;
+            vertical-align: middle;
+        }
+        .skill-bar-fill {
+            height: 100%;
+            background: #06b6d4;
+            border-radius: 4px;
+        }
+        .skill-percent {
+            display: inline-block;
+            width: 40px;
+            text-align: left;
+            font-size: 11px;
+            color: #666;
+            margin-right: 10px;
+        }
+        .item {
+            margin-bottom: 12px;
+            padding-right: 10px;
+            border-right: 3px solid #8b5cf6;
+        }
+        .item-title {
+            font-weight: bold;
+            color: #1e3a8a;
+            font-size: 13px;
+        }
+        .item-subtitle {
+            color: #666;
+            font-size: 11px;
+            margin: 3px 0;
+        }
+        .item-date {
+            color: #999;
+            font-size: 10px;
+        }
+        .item-desc {
+            font-size: 11px;
+            color: #555;
+            margin-top: 5px;
+        }
+        .bio-text {
+            font-size: 11px;
+            color: #555;
+            text-align: justify;
+        }
+        .project-item {
+            margin-bottom: 12px;
+            padding-right: 10px;
+            border-right: 3px solid #22c55e;
+        }
+        .project-title {
+            font-weight: bold;
+            color: #15803d;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ profile.full_name|default:profile_user.username }}</h1>
+        {% if profile.job_title %}
+        <div class="job-title">{{ profile.job_title }}</div>
+        {% endif %}
+    </div>
+
+    {% if profile.bio %}
+    <div class="section">
+        <div class="section-title">درباره من</div>
+        <p class="bio-text">{{ profile.bio }}</p>
+    </div>
+    {% endif %}
+
+    <div class="section">
+        <div class="section-title">اطلاعات تماس</div>
+        <div class="info-grid">
+            {% if profile.email %}<div class="info-item"><strong>ایمیل:</strong> {{ profile.email }}</div>{% endif %}
+            {% if profile.phone %}<div class="info-item"><strong>تلفن:</strong> {{ profile.phone }}</div>{% endif %}
+            {% if profile.location %}<div class="info-item"><strong>محل:</strong> {{ profile.location }}</div>{% endif %}
+            {% if profile.website %}<div class="info-item"><strong>وب‌سایت:</strong> {{ profile.website }}</div>{% endif %}
+            {% if profile.linkedin %}<div class="info-item"><strong>لینکدین:</strong> {{ profile.linkedin }}</div>{% endif %}
+            {% if profile.github %}<div class="info-item"><strong>گیت‌هاب:</strong> {{ profile.github }}</div>{% endif %}
+        </div>
+    </div>
+
+    {% if skills %}
+    <div class="section">
+        <div class="section-title">مهارت‌ها</div>
+        {% for skill in skills %}
+        <div class="skill-item">
+            <span class="skill-name">{{ skill.name }}</span>
+            <span class="skill-bar"><span class="skill-bar-fill" style="width: {{ skill.level }}%;"></span></span>
+            <span class="skill-percent">{{ skill.level }}%</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if projects %}
+    <div class="section">
+        <div class="section-title">پروژه‌ها</div>
+        {% for project in projects %}
+        <div class="project-item">
+            <div class="project-title">{{ project.title }}</div>
+            {% if project.technologies %}<div class="item-subtitle">🛠 {{ project.technologies }}</div>{% endif %}
+            {% if project.description %}<div class="item-desc">{{ project.description }}</div>{% endif %}
+            {% if project.link %}<div class="item-date">لینک: {{ project.link }}</div>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if experiences %}
+    <div class="section">
+        <div class="section-title">تجربه‌های کاری</div>
+        {% for exp in experiences %}
+        <div class="item">
+            <div class="item-title">{{ exp.title }}</div>
+            <div class="item-subtitle">{{ exp.company }}</div>
+            <div class="item-date">{{ exp.start_date }} تا {{ exp.end_date|default:"اکنون" }}</div>
+            {% if exp.description %}<div class="item-desc">{{ exp.description }}</div>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if educations %}
+    <div class="section">
+        <div class="section-title">تحصیلات</div>
+        {% for edu in educations %}
+        <div class="item">
+            <div class="item-title">{{ edu.degree }} {{ edu.field }}</div>
+            <div class="item-subtitle">{{ edu.university }}</div>
+            <div class="item-date">{{ edu.start_year }} - {{ edu.end_year|default:"اکنون" }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</body>
+</html>

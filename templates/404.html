@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}صفحه پیدا نشد{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 40px 0;">
+    <div style="font-size: 120px; font-weight: 900; background: linear-gradient(135deg, #8b5cf6, #06b6d4, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1;">404</div>
+    <h1 style="font-size: 28px; margin: 20px 0;">صفحه‌ای که دنبالش بودی پیدا نشد</h1>
+    <p style="color: #94a3b8; margin-bottom: 30px;">شاید آدرس رو اشتباه وارد کردی یا صفحه حذف شده</p>
+    <a href="{% url 'home' %}" class="btn">بازگشت به خانه</a>
+</div>
+{% endblock %}

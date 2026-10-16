@@ -1,0 +1,30 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}ویرایش پروفایل{% endblock %}
+
+{% block content %}
+<h1 style="margin-bottom: 10px;">ویرایش پروفایل</h1>
+<p style="color: #94a3b8; margin-bottom: 30px; font-size: 14px;">اطلاعات شخصی خودت رو اینجا به‌روز کن</p>
+
+{% if form.errors %}
+<div style="background: rgba(248, 113, 113, 0.1); border: 1px solid rgba(248, 113, 113, 0.4); border-radius: 12px; padding: 15px 20px; margin-bottom: 20px;">
+    <strong style="color: #f87171; display: block; margin-bottom: 8px;">خطا در ذخیره‌سازی:</strong>
+    <ul style="list-style: none; color: #fca5a5; font-size: 14px;">
+    {% for field, errors in form.errors.items %}
+        {% for error in errors %}
+        <li>• {{ error }}</li>
+        {% endfor %}
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button type="submit">💾 ذخیره تغییرات</button>
+        <a href="{% url 'dashboard' %}" class="btn" style="background: rgba(100, 116, 139, 0.3); box-shadow: none;">انصراف</a>
+    </div>
+</form>
+{% endblock %}
