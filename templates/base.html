@@ -57,10 +57,7 @@
         }
 
         /* ===== Light Theme ===== */
-        body.light-theme {
-            background: #f5f7fa;
-            color: #1e293b;
-        }
+        body.light-theme { background: #f5f7fa; color: #1e293b; }
         body.light-theme::before {
             background:
                 radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.15), transparent 45%),
@@ -72,86 +69,27 @@
                 linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
         }
-        body.light-theme nav {
-            background: rgba(255, 255, 255, 0.85);
-            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-        }
+        body.light-theme nav { background: rgba(255, 255, 255, 0.85); border-bottom: 1px solid rgba(139, 92, 246, 0.2); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08); }
         body.light-theme nav a { color: #475569; }
         body.light-theme nav a:hover { color: #1e293b; background: rgba(139, 92, 246, 0.1); }
-        body.light-theme .user-badge {
-            background: rgba(251, 191, 36, 0.15);
-            border: 1px solid rgba(251, 191, 36, 0.4);
-        }
-        body.light-theme .card {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(139, 92, 246, 0.15);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08), 0 0 40px rgba(139, 92, 246, 0.08);
-        }
-        body.light-theme h1, body.light-theme h2 {
-            background: linear-gradient(135deg, #7c3aed, #0891b2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        body.light-theme nav .brand .logo-mark {
-            background: linear-gradient(#fff, #fff) padding-box,
-                        linear-gradient(135deg, #8b5cf6, #06b6d4, #f472b6) border-box;
-        }
+        body.light-theme .user-badge { background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.4); }
+        body.light-theme .card { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(139, 92, 246, 0.15); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08), 0 0 40px rgba(139, 92, 246, 0.08); }
+        body.light-theme h1, body.light-theme h2 { background: linear-gradient(135deg, #7c3aed, #0891b2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        body.light-theme nav .brand .logo-mark { background: linear-gradient(#fff, #fff) padding-box, linear-gradient(135deg, #8b5cf6, #06b6d4, #f472b6) border-box; }
 
-        /* اصلاح رنگ همه متن‌ها در تم روشن */
-        body.light-theme .card,
-        body.light-theme .card * {
-            color: #1e293b;
-        }
-        body.light-theme .card p,
-        body.light-theme .card span,
-        body.light-theme .card div,
-        body.light-theme .card strong,
-        body.light-theme .card label,
-        body.light-theme .card h3,
-        body.light-theme .card li,
-        body.light-theme .card code {
-            color: #334155 !important;
-        }
-        body.light-theme .card h1,
-        body.light-theme .card h2 {
-            -webkit-text-fill-color: transparent !important;
-            color: transparent !important;
-        }
-        body.light-theme .card a {
-            color: #7c3aed !important;
-        }
-        body.light-theme .card a.btn,
-        body.light-theme .card button,
-        body.light-theme .card .btn {
-            color: #ffffff !important;
-        }
-        /* کارت‌های رنگی داخلی */
-        body.light-theme .card div[style*="background: rgba(139, 92, 246"] {
-            background: rgba(139, 92, 246, 0.12) !important;
-        }
-        body.light-theme .card div[style*="background: rgba(6, 182, 212"] {
-            background: rgba(6, 182, 212, 0.12) !important;
-        }
-        body.light-theme .card div[style*="background: rgba(244, 114, 182"] {
-            background: rgba(244, 114, 182, 0.12) !important;
-        }
-        body.light-theme .card div[style*="background: rgba(251, 191, 36"] {
-            background: rgba(251, 191, 36, 0.12) !important;
-        }
-        body.light-theme .card div[style*="background: rgba(34, 197, 94"] {
-            background: rgba(34, 197, 94, 0.12) !important;
-        }
-        body.light-theme .card div[style*="background: rgba(168, 85, 247"] {
-            background: rgba(168, 85, 247, 0.12) !important;
-        }
-        body.light-theme .card div[style*="background: rgba(15, 23, 42"] {
-            background: rgba(241, 245, 249, 0.9) !important;
-        }
-        body.light-theme .card div[style*="background: rgba(20, 20, 40"] {
-            background: rgba(241, 245, 249, 0.9) !important;
-        }
+        body.light-theme .card, body.light-theme .card * { color: #1e293b; }
+        body.light-theme .card p, body.light-theme .card span, body.light-theme .card div, body.light-theme .card strong, body.light-theme .card label, body.light-theme .card h3, body.light-theme .card li, body.light-theme .card code { color: #334155 !important; }
+        body.light-theme .card h1, body.light-theme .card h2 { -webkit-text-fill-color: transparent !important; color: transparent !important; }
+        body.light-theme .card a { color: #7c3aed !important; }
+        body.light-theme .card a.btn, body.light-theme .card button, body.light-theme .card .btn { color: #ffffff !important; }
+        body.light-theme .card div[style*="background: rgba(139, 92, 246"] { background: rgba(139, 92, 246, 0.12) !important; }
+        body.light-theme .card div[style*="background: rgba(6, 182, 212"] { background: rgba(6, 182, 212, 0.12) !important; }
+        body.light-theme .card div[style*="background: rgba(244, 114, 182"] { background: rgba(244, 114, 182, 0.12) !important; }
+        body.light-theme .card div[style*="background: rgba(251, 191, 36"] { background: rgba(251, 191, 36, 0.12) !important; }
+        body.light-theme .card div[style*="background: rgba(34, 197, 94"] { background: rgba(34, 197, 94, 0.12) !important; }
+        body.light-theme .card div[style*="background: rgba(168, 85, 247"] { background: rgba(168, 85, 247, 0.12) !important; }
+        body.light-theme .card div[style*="background: rgba(15, 23, 42"] { background: rgba(241, 245, 249, 0.9) !important; }
+        body.light-theme .card div[style*="background: rgba(20, 20, 40"] { background: rgba(241, 245, 249, 0.9) !important; }
 
         nav {
             position: sticky;
@@ -207,7 +145,7 @@
             background: linear-gradient(135deg, #8b5cf6, #06b6d4);
             opacity: 0.9;
         }
-        nav .links { display: flex; align-items: center; gap: 4px; }
+        nav .links { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: center; }
         nav a {
             color: #cbd5e1;
             text-decoration: none;
@@ -217,10 +155,7 @@
             border-radius: 10px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        nav a:hover {
-            color: #fff;
-            background: rgba(139, 92, 246, 0.15);
-        }
+        nav a:hover { color: #fff; background: rgba(139, 92, 246, 0.15); }
         nav .user-badge {
             display: flex;
             align-items: center;
@@ -233,25 +168,10 @@
             font-weight: 500;
             font-size: 13px;
         }
-        nav .user-badge .dot {
-            width: 7px; height: 7px;
-            border-radius: 50%;
-            background: #22c55e;
-            box-shadow: 0 0 8px #22c55e;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(0.85); }
-        }
+        nav .user-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px #22c55e; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.85); } }
 
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1100px;
-            margin: 60px auto;
-            padding: 0 24px;
-        }
+        .container { position: relative; z-index: 1; max-width: 1100px; margin: 60px auto; padding: 0 24px; }
         .card {
             position: relative;
             background: var(--card-bg);
@@ -260,38 +180,16 @@
             border: 1px solid rgba(255, 255, 255, 0.07);
             padding: 50px;
             border-radius: 24px;
-            box-shadow:
-                0 25px 60px rgba(0, 0, 0, 0.5),
-                0 0 80px rgba(139, 92, 246, 0.12);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 80px rgba(139, 92, 246, 0.12);
             animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
             transition: all 0.4s ease;
         }
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1.5px;
-            background: linear-gradient(90deg, transparent, #8b5cf6, #06b6d4, #f472b6, transparent);
-            animation: shimmer 4s linear infinite;
-        }
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1.5px; background: linear-gradient(90deg, transparent, #8b5cf6, #06b6d4, #f472b6, transparent); animation: shimmer 4s linear infinite; }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        h1, h2 {
-            background: linear-gradient(135deg, #a78bfa, #60a5fa, #22d3ee);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 18px;
-            font-weight: 700;
-        }
+        h1, h2 { background: linear-gradient(135deg, #a78bfa, #60a5fa, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 18px; font-weight: 700; }
         h1 { font-size: 34px; }
         h2 { font-size: 26px; }
         p { line-height: 2; color: var(--text-light); font-size: 15.5px; font-weight: 400; }
@@ -313,108 +211,84 @@
             text-decoration: none;
             display: inline-block;
         }
-        button:hover, .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(139, 92, 246, 0.55);
-        }
+        button:hover, .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(139, 92, 246, 0.55); }
 
         form p { margin-bottom: 18px; }
-        form label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-light);
-            font-weight: 500;
-            font-size: 13.5px;
+        form label { display: block; margin-bottom: 8px; color: var(--text-light); font-weight: 500; font-size: 13.5px; }
+        form input[type="text"], form input[type="password"], form input[type="email"], form input[type="number"], form input[type="url"], form input[type="date"] {
+            width: 100%; padding: 12px 16px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(139, 92, 246, 0.22); border-radius: 10px; color: var(--text); font-family: 'Shabnam', Tahoma, sans-serif; font-size: 14.5px; transition: all 0.3s ease; outline: none;
         }
-        form input[type="text"],
-        form input[type="password"],
-        form input[type="email"],
-        form input[type="number"],
-        form input[type="url"],
-        form input[type="date"] {
-            width: 100%;
-            padding: 12px 16px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(139, 92, 246, 0.22);
-            border-radius: 10px;
-            color: var(--text);
-            font-family: 'Shabnam', Tahoma, sans-serif;
-            font-size: 14.5px;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-        body.light-theme form input[type="text"],
-        body.light-theme form input[type="password"],
-        body.light-theme form input[type="email"],
-        body.light-theme form input[type="number"],
-        body.light-theme form input[type="url"],
-        body.light-theme form input[type="date"] {
-            background: rgba(241, 245, 249, 0.95);
-            color: #1e293b !important;
-            border: 1px solid rgba(139, 92, 246, 0.3);
-        }
-        form input:focus, form textarea:focus {
-            border-color: #8b5cf6;
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18);
-            background: rgba(15, 23, 42, 0.85);
-        }
-        body.light-theme form input:focus {
-            background: #fff;
-        }
-        form textarea {
-            width: 100%;
-            padding: 12px 16px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(139, 92, 246, 0.22);
-            border-radius: 10px;
-            color: var(--text);
-            font-family: 'Shabnam', Tahoma, sans-serif;
-            font-size: 14.5px;
-            transition: all 0.3s ease;
-            outline: none;
-            resize: vertical;
-        }
-        body.light-theme form textarea {
-            background: rgba(241, 245, 249, 0.95);
-            color: #1e293b !important;
-        }
-        form .helptext {
-            display: block;
-            color: #64748b;
-            font-size: 12px;
-            margin-top: 6px;
-            line-height: 1.7;
-        }
-        body.light-theme form .helptext {
-            color: #64748b !important;
-        }
-        form ul.errorlist {
-            list-style: none;
-            color: #f87171;
-            font-size: 13px;
-            margin-top: 4px;
-        }
+        body.light-theme form input[type="text"], body.light-theme form input[type="password"], body.light-theme form input[type="email"], body.light-theme form input[type="number"], body.light-theme form input[type="url"], body.light-theme form input[type="date"] { background: rgba(241, 245, 249, 0.95); color: #1e293b !important; border: 1px solid rgba(139, 92, 246, 0.3); }
+        form input:focus, form textarea:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18); background: rgba(15, 23, 42, 0.85); }
+        body.light-theme form input:focus { background: #fff; }
+        form textarea { width: 100%; padding: 12px 16px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(139, 92, 246, 0.22); border-radius: 10px; color: var(--text); font-family: 'Shabnam', Tahoma, sans-serif; font-size: 14.5px; transition: all 0.3s ease; outline: none; resize: vertical; }
+        body.light-theme form textarea { background: rgba(241, 245, 249, 0.95); color: #1e293b !important; }
+        form .helptext { display: block; color: #64748b; font-size: 12px; margin-top: 6px; line-height: 1.7; }
+        body.light-theme form .helptext { color: #64748b !important; }
+        form ul.errorlist { list-style: none; color: #f87171; font-size: 13px; margin-top: 4px; }
         a { color: #a78bfa; text-decoration: none; transition: 0.3s; }
         a:hover { color: #f472b6; }
         a.btn, a.btn:hover, a.btn:visited { color: #ffffff !important; }
+        #themeToggle { transition: all 0.3s ease; }
+        #themeToggle:hover { transform: scale(1.1); box-shadow: 0 12px 35px rgba(139, 92, 246, 0.7) !important; }
 
-        #themeToggle {
-            transition: all 0.3s ease;
-        }
-        #themeToggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 12px 35px rgba(139, 92, 246, 0.7) !important;
-        }
-        /* Placeholder color for light theme */
-        body.light-theme input::placeholder,
-        body.light-theme textarea::placeholder {
-            color: #64748b !important;
-            opacity: 1;
-        }
-        input::placeholder,
-        textarea::placeholder {
-            color: #94a3b8;
-            opacity: 1;
+        /* ========================================= */
+        /* ===== کدهای واکنش‌گرا (Mobile) ===== */
+        /* ========================================= */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                padding: 15px 20px;
+                gap: 15px;
+            }
+            nav .links {
+                gap: 8px;
+                width: 100%;
+                justify-content: center;
+            }
+            nav a { font-size: 13px; padding: 8px 12px; }
+            nav .user-badge { font-size: 12px; padding: 5px 12px; }
+            
+            .container {
+                margin: 20px auto;
+                padding: 0 15px;
+            }
+            .card {
+                padding: 25px 20px;
+                border-radius: 16px;
+            }
+            h1 { font-size: 24px; }
+            h2 { font-size: 20px; }
+            p { font-size: 14px; }
+            
+            button, .btn {
+                width: 100%;
+                margin-bottom: 8px;
+                padding: 12px 15px;
+            }
+            
+            /* تغییر گریدها به یک ستونه در موبایل */
+            div[style*="display: grid"], 
+            div[style*="display:flex"] {
+                grid-template-columns: 1fr !important;
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+            div[style*="display: flex; gap: 10px"] {
+                flex-direction: row !important; /* دکمه‌های کنار هم بمونن */
+                flex-wrap: wrap !important;
+            }
+            div[style*="display: flex; gap: 15px; justify-content: center"] {
+                flex-direction: column !important;
+            }
+            
+            /* اصلاح کادر جستجو */
+            form[style*="display: flex"] {
+                flex-direction: column !important;
+            }
+            form[style*="display: flex"] input {
+                width: 100% !important;
+            }
         }
     </style>
 </head>
