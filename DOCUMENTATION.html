@@ -6,22 +6,24 @@
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/shabnam-font@v5.0.1/dist/font-face.css" rel="stylesheet">
     <style>
         body { font-family: 'Shabnam', Tahoma, sans-serif; line-height: 1.8; color: #333; padding: 40px; max-width: 850px; margin: 0 auto; background: #fff; }
-        h1 { color: #1e3a8a; text-align: center; border-bottom: 3px solid #8b5cf6; padding-bottom: 15px; }
-        h2 { color: #1e3a8a; margin-top: 30px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
-        h3 { color: #8b5cf6; }
+        h1 { color: #1e3a8a; text-align: center; border-bottom: 3px solid #8b5cf6; padding-bottom: 15px; font-size: 28px; }
+        h2 { color: #1e3a8a; margin-top: 35px; border-bottom: 1px solid #ddd; padding-bottom: 5px; font-size: 20px; }
+        h3 { color: #8b5cf6; margin-top: 20px; font-size: 16px; }
         table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 13px; }
         th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: right; }
         th { background: #f3f4f6; color: #1e3a8a; }
         .badge { background: #22c55e; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; display: inline-block; white-space: nowrap; }
         .footer { margin-top: 50px; text-align: center; color: #666; font-size: 13px; border-top: 1px solid #ddd; padding-top: 20px; }
+        ul { padding-right: 20px; margin-bottom: 15px; }
+        li { margin-bottom: 5px; font-size: 14px; }
         @media print { body { padding: 0; } }
     </style>
 </head>
 <body>
-    <h1>مستندات پروژه سایت رزومه‌ساز</h1>
+    <h1>مستندات جامع پروژه (پلتفرم SaaS)</h1>
     
     <h2>۱. خلاصه پروژه</h2>
-    <p>این پروژه یک <strong>سایت رزومه‌ساز آنلاین</strong> است که با فریم‌ورک جنگو (Django) پیاده‌سازی شده است. کاربران می‌توانند ثبت‌نام کنند، پروفایل شخصی بسازند، مهارت‌ها، پروژه‌ها و گواهی‌نامه‌های خود را اضافه کنند و در نهایت رزومه خود را به صورت PDF دانلود کنند.</p>
+    <p>این پروژه ابتدا به عنوان یک <strong>سایت رزومه‌ساز آنلاین</strong> با فریم‌ورک جنگو (Django) آغاز شد و سپس به یک <strong>پلتفرم کامل SaaS (نرم‌افزار به عنوان سرویس)</strong> ارتقا یافت. در این پلتفرم، کاربران می‌توانند ثبت‌نام کنند، پروفایل حرفه‌ای بسازند، رزومه خود را به صورت PDF دانلود کنند و با خرید اشتراک ماهانه، به امکانات ویژه‌ای نظیر ساخت مینی‌سایت شخصی، چت با سایر کاربران و ثبت آگهی‌های فریلنسری دسترسی پیدا کنند.</p>
     <p><strong>آدرس سایت آنلاین:</strong> mohammad2000.pythonanywhere.com</p>
     <p><strong>مخزن گیت‌هاب:</strong> github.com/safaie983-pixel/Resume_Site_Students</p>
 
@@ -29,18 +31,39 @@
     <ul>
         <li><strong>Backend:</strong> Python 3.13, Django 6.1.2</li>
         <li><strong>Database:</strong> SQLite</li>
-        <li><strong>Frontend:</strong> HTML5, CSS3, JavaScript (طراحی ریسپانسیو و Glassmorphism)</li>
+        <li><strong>Frontend:</strong> HTML5, CSS3 (طراحی ریسپانسیو، Glassmorphism، Dark/Light Mode), JavaScript (مدیریت تم‌ها و کپی لینک)</li>
         <li><strong>خروجی PDF:</strong> xhtml2pdf, ReportLab (با پشتیبانی کامل از فونت فارسی)</li>
+        <li><strong>پکیج‌های امنیتی:</strong> django-axes (جلوگیری از Brute-Force), django-auditlog (ثبت وقایع), python-dotenv (مدیریت متغیرهای محیطی)</li>
     </ul>
 
-    <h2>۳. قابلیت‌های اصلی</h2>
+    <h2>۳. قابلیت‌های کلیدی و پیشرفته</h2>
+    <h3>۳.۱. سیستم رزومه‌ساز و پروفایل</h3>
     <ul>
-        <li>سیستم احراز هویت (ثبت‌نام، ورود، خروج)</li>
-        <li>پنل کاربری اختصاصی و پنل مدیریت (Jazzmin)</li>
-        <li>مدیریت مهارت‌ها، تجربه‌های کاری، تحصیلات، پروژه‌ها و گواهی‌نامه‌ها</li>
-        <li>آپلود عکس پروفایل و دانلود PDF رزومه</li>
-        <li>جستجوی پیشرفته در بین کاربران</li>
-        <li>پشتیبانی از حالت تاریک و روشن (Dark/Light Mode)</li>
+        <li>مدیریت اطلاعات شخصی، مهارت‌ها (با نوار درصد)، تجربه‌های کاری، تحصیلات، پروژه‌ها و گواهی‌نامه‌ها</li>
+        <li>آپلود عکس پروفایل</li>
+        <li>دانلود رزومه به صورت PDF (با فونت فارسی و طراحی اختصاصی)</li>
+        <li>جستجوی پیشرفته در بین کاربران (بر اساس نام، عنوان شغلی، مهارت و ...)</li>
+    </ul>
+
+    <h3>۳.۲. سیستم اشتراک (Subscription)</h3>
+    <ul>
+        <li>درگاه پرداخت کارت به کارت با آپلود فیش بانکی توسط کاربر</li>
+        <li>تأیید فیش توسط مدیر در پنل ادمین (با قابلیت فعال‌سازی خودکار ۳۰ روزه با یک کلیک)</li>
+        <li>امکان تعیین قیمت اشتراک از داخل پنل ادمین</li>
+    </ul>
+
+    <h3>۳.۳. مینی‌سایت (SaaS)</h3>
+    <ul>
+        <li>هر کاربر می‌تواند به صورت دستی و با انتخاب خودش یک مینی‌سایت (پورتفولیو) منحصر به فرد بسازد.</li>
+        <li>وجود ۶ قالب (تم) زیبا: تاریک، روشن، نئون، اقیانوس، غروب و جنگل.</li>
+        <li>امکان افزودن لینک‌های اختصاصی (مثل شبکه‌های اجتماعی).</li>
+        <li>نمایش خودکار تمام اطلاعات رزومه، مهارت‌ها، پروژه‌ها و دکمه دانلود PDF در مینی‌سایت.</li>
+    </ul>
+
+    <h3>۳.۴. سیستم پیام‌رسان (چت) و فریلنسری</h3>
+    <ul>
+        <li>ارسال و دریافت پیام مستقیم بین کاربران دارای اشتراک فعال.</li>
+        <li>تخته آگهی‌های فریلنسری: کاربران می‌توانند نیازهای پروژه‌ای خود را ثبت کرده و بقیه آن‌ها را مشاهده کنند.</li>
     </ul>
 
     <h2>۴. مستندات امنیتی (پوشش کامل OWASP Top 10)</h2>
@@ -115,10 +138,11 @@
     </table>
 
     <h2>۵. استقرار (Deployment)</h2>
-    <p>پروژه در محیط هاست ابری رایگان <strong>PythonAnywhere</strong> مستقر شده است. مراحل استقرار شامل ساخت محیط مجازی (Virtualenv)، نصب پکیج‌های requirements.txt، تنظیم فایل WSGI، جمع‌آوری فایل‌های استاتیک (collectstatic) و تنظیم مسیرهای مدیا بوده است.</p>
+    <p>پروژه در محیط هاست ابری رایگان <strong>PythonAnywhere</strong> مستقر شده است. مراحل استقرار شامل ساخت محیط مجازی (Virtualenv)، نصب پکیج‌های requirements.txt، تنظیم فایل WSGI، جمع‌آوری فایل‌های استاتیک (collectstatic) و تنظیم مسیرهای مدیا بوده است. دیتابیس در محیط سرور با استفاده از Migrations مدیریت می‌شود.</p>
 
     <div class="footer">
-        <p>پروژه دانشگاهی - طراحی و پیاده‌سازی سایت رزومه‌ساز با Django</p>
+        <p>پروژه دانشگاهی - طراحی و پیاده‌سازی پلتفرم SaaS رزومه‌ساز و فریلنسری با Django</p>
+        <p>دانشجو: محمدحسین صفائی منش</p>
     </div>
 </body>
 </html>
