@@ -223,19 +223,19 @@ def download_resume_pdf(request, username):
 
 def get_dollar_price_toman():
     try:
-        # استفاده از API سایت TGJU برای قیمت لحظه‌ای دلار آزاد
+        # استفاده از API نوبیتکس (قیمت تتر که معادل دلار آزاد است)
         req = urllib.request.Request(
-            "https://api.tgju.org/v1/market/indicator/summary-table-data/price_dollar_rl", 
+            "https://api.nobitex.ir/v2/orderbook/USDTIRT", 
             headers={'User-Agent': 'Mozilla/5.0'}
         )
         with urllib.request.urlopen(req, timeout=5) as response:
             data = json.loads(response.read().decode())
-            # قیمتی که TGJU برمی‌گردونه به ریاله (مثلا 6,550,000) که با تقسیم بر 10 تومان می‌شه
-            price_rial = int(data['data'][0]['p'].replace(',', ''))
-            return price_rial // 10
+            # قیمت آخرین معامله به ریال است، تقسیم بر 10 میکنیم تا تومان شود
+            price_rial = float(data['lastTradePrice'])
+            return int(price_rial / 10)
     except Exception as e:
-        # اگر API قطع بود، قیمت پیش‌فرض 650,000 تومان (قیمت واقعی امروز)
-        return 650000
+        # اگر API قطع بود، قیمت پیش‌فرض
+        return 271000
 
 @login_required
 def subscription_page(request):
