@@ -1,9 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User
 from auditlog.registry import auditlog
+from django.utils import timezone
+from datetime import timedelta
 
 
 class Profile(models.Model):
+    THEME_CHOICES = [
+        ('dark', 'تاریک (پیش‌فرض)'),
+        ('light', 'روشن'),
+        ('neon', 'نئون'),
+    ]
+    
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     full_name = models.CharField(max_length=100, blank=True, verbose_name='نام و نام خانوادگی')
     bio = models.TextField(blank=True, verbose_name='درباره من')
@@ -16,6 +24,9 @@ class Profile(models.Model):
     linkedin = models.URLField(blank=True, verbose_name='لینکدین')
     github = models.URLField(blank=True, verbose_name='گیت‌هاب')
     twitter = models.URLField(blank=True, verbose_name='توییتر')
+    
+    theme = models.CharField(max_length=20, choices=THEME_CHOICES, default='dark', verbose_name='قالب سایت شخصی')
+    
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='آخرین ویرایش')
 
@@ -107,9 +118,105 @@ class Certificate(models.Model):
         return f'{self.title} - {self.profile.user.username}'
 
 
+class CustomLink(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='custom_links')
+    title = models.CharField(max_length=100, verbose_name='عنوان لینک')
+    url = models.URLField(verbose_name='آدرس لینک')
+
+    class Meta:
+        verbose_name = 'لینک اختصاصی'
+        verbose_name_plural = 'لینک‌های اختصاصی'
+
+    def __str__(self):
+        return f'{self.title} - {self.profile.user.username}'
+
+
+# ====== سیستم اشتراک ======
+
+class Subscription(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='subscription')
+    is_active = models.BooleanField(default=False, verbose_name='وضعیت فعال بودن')
+    expiry_date = models.DateTimeField(null=True, blank=True, verbose_name='تاریخ انقضا')
+    
+    def check_active(self):
+        if self.is_active and self.expiry_date:
+            if timezone.now() > self.expiry_date:
+                self.is_active = False
+                self.save()
+        return self.is_active
+
+    def __str__(self):
+        return f'اشتراک {self.user.username} - {"فعال" if self.is_active else "غیرفعال"}'
+
+    class Meta:
+        verbose_name = 'اشتراک'
+        verbose_name_plural = 'اشتراک‌ها'
+
+
+class PaymentReceipt(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'در انتظار بررسی'),
+        ('approved', 'تأیید شده'),
+        ('rejected', 'رد شده'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receipts')
+    image = models.ImageField(upload_to='receipts/', verbose_name='تصویر فیش')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending', verbose_name='وضعیت')
+    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ آپلود')
+
+    def __str__(self):
+        return f'فیش {self.user.username} - {self.get_status_display()}'
+
+    class Meta:
+        verbose_name = 'فیش واریزی'
+        verbose_name_plural = 'فیش‌های واریزی'
+
+
+# ====== سیستم چت (پیام‌رسان) ======
+
+class Message(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
+    content = models.TextField(verbose_name='متن پیام')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ارسال')
+    is_read = models.BooleanField(default=False, verbose_name='خوانده شده')
+
+    class Meta:
+        verbose_name = 'پیام'
+        verbose_name_plural = 'پیام‌ها'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'از {self.sender.username} به {self.receiver.username}'
+
+
+# ====== سیستم فریلنسری (ثبت کار) ======
+
+class JobPost(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='job_posts')
+    title = models.CharField(max_length=150, verbose_name='عنوان کار')
+    description = models.TextField(verbose_name='توضیحات')
+    budget = models.CharField(max_length=50, verbose_name='بودجه (مثلاً توافقی)')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ثبت')
+    is_active = models.BooleanField(default=True, verbose_name='فعال')
+
+    class Meta:
+        verbose_name = 'آگهی کار'
+        verbose_name_plural = 'آگهی‌های کار'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.title} - {self.user.username}'
+
+
 auditlog.register(Profile)
 auditlog.register(Skill)
 auditlog.register(Experience)
 auditlog.register(Education)
 auditlog.register(Project)
 auditlog.register(Certificate)
+auditlog.register(CustomLink)
+auditlog.register(Subscription)
+auditlog.register(PaymentReceipt)
+auditlog.register(Message)
+auditlog.register(JobPost)
