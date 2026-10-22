@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}سایت غیرفعال{% endblock %}
+{% block content %}
+<div style="text-align: center; padding: 50px 0;">
+    <div style="font-size: 80px; margin-bottom: 20px;">🔒</div>
+    <h1 style="font-size: 28px; color: #fbbf24; margin-bottom: 15px;">این سایت موقتاً غیرفعال است</h1>
+    <p style="color: #94a3b8; margin-bottom: 30px;">صاحب این سایت در حال حاضر اشتراک فعالی ندارد.</p>
+    <a href="{% url 'home' %}" class="btn">بازگشت به خانه</a>
+</div>
+{% endblock %}

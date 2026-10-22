@@ -96,16 +96,6 @@ class PaymentReceiptForm(forms.ModelForm):
             'image': forms.FileInput(attrs={'accept': 'image/*'}),
         }
 
-    def clean_image(self):
-        image = self.cleaned_data.get('image')
-        if image:
-            if image.size > 5 * 1024 * 1024:
-                raise forms.ValidationError('حجم فیش نباید بیشتر از ۵ مگابایت باشه')
-            name = image.name.lower()
-            if not (name.endswith('.jpg') or name.endswith('.jpeg') or name.endswith('.png') or name.endswith('.webp')):
-                raise forms.ValidationError('فقط فرمت‌های JPG، PNG و WebP پشتیبانی می‌شن')
-        return image
-
 
 class JobPostForm(forms.ModelForm):
     class Meta:
@@ -113,4 +103,14 @@ class JobPostForm(forms.ModelForm):
         fields = ['title', 'description', 'budget']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
+        }
+
+
+class CustomLinkForm(forms.ModelForm):
+    class Meta:
+        model = CustomLink
+        fields = ['title', 'url']
+        widgets = {
+            'title': forms.TextInput(attrs={'placeholder': 'مثلاً: کانال تلگرام من'}),
+            'url': forms.URLInput(attrs={'placeholder': 'https://t.me/username'}),
         }

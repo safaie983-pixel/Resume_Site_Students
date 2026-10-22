@@ -40,6 +40,11 @@ urlpatterns = [
     path('jobs/add/', views.add_job, name='add_job'),
     path('jobs/delete/<int:pk>/', views.delete_job, name='delete_job'),
 
+    # بخش مینی‌سایت (SaaS)
+    path('mini-site/manage/', views.manage_mini_site, name='manage_mini_site'),
+    path('mini-site/delete/<int:pk>/', views.delete_custom_link, name='delete_custom_link'),
+    path('site/<str:username>/', views.public_mini_site, name='public_mini_site'),
+
     # بخش پروفایل عمومی
     path('u/<str:username>/', views.public_profile, name='public_profile'),
     path('u/<str:username>/pdf/', views.download_resume_pdf, name='download_resume_pdf'),

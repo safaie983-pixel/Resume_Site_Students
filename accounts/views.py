@@ -12,11 +12,11 @@ import json
 
 from .forms import (
     RegisterForm, ProfileForm, SkillForm, ExperienceForm, EducationForm, 
-    ProjectForm, CertificateForm, PaymentReceiptForm, JobPostForm
+    ProjectForm, CertificateForm, PaymentReceiptForm, JobPostForm, CustomLinkForm
 )
 from .models import (
     Profile, Skill, Experience, Education, Project, Certificate, 
-    Subscription, PaymentReceipt, Message, JobPost, SiteSetting
+    Subscription, PaymentReceipt, Message, JobPost, SiteSetting, CustomLink
 )
 from .pdf_utils import render_to_pdf
 
@@ -42,8 +42,13 @@ def calculate_profile_completion(profile):
 def home(request):
     query = request.GET.get('q', '').strip()
     if query:
+        # جستجوی پیشرفته در نام، عنوان شغلی، مهارت‌ها، پروژه‌ها و ...
         users = User.objects.filter(is_active=True).filter(
-            models.Q(username__icontains=query) | models.Q(profile__full_name__icontains=query)
+            models.Q(username__icontains=query) |
+            models.Q(profile__full_name__icontains=query) |
+            models.Q(profile__job_title__icontains=query) |
+            models.Q(profile__skills__name__icontains=query) |
+            models.Q(profile__projects__title__icontains=query)
         ).distinct()
     else:
         users = User.objects.filter(is_active=True).order_by('-date_joined')[:12]
@@ -223,7 +228,6 @@ def subscription_page(request):
     subscription, created = Subscription.objects.get_or_create(user=request.user)
     is_active = subscription.check_active()
     
-    # دریافت قیمت از تنظیمات سایت
     site_setting, _ = SiteSetting.objects.get_or_create(id=1)
     total_price = site_setting.subscription_price
     
@@ -348,3 +352,71 @@ def delete_job(request, pk):
         job.delete()
         messages.success(request, 'آگهی با موفقیت حذف شد.')
     return redirect('job_list')
+
+
+# ==================== بخش مینی‌سایت (SaaS) ====================
+
+@login_required
+def manage_mini_site(request):
+    sub, _ = Subscription.objects.get_or_create(user=request.user)
+    if not sub.check_active():
+        messages.warning(request, 'برای ساخت و مدیریت مینی‌سایت شخصی، باید اشتراک فعال داشته باشید.')
+        return redirect('subscription_page')
+        
+    profile = request.user.profile
+    links = profile.custom_links.all()
+    
+    if request.method == 'POST':
+        if 'update_theme' in request.POST:
+            new_theme = request.POST.get('theme')
+            if new_theme in ['dark', 'light', 'neon']:
+                profile.theme = new_theme
+                profile.save()
+                messages.success(request, 'تم مینی‌سایت شما با موفقیت تغییر کرد.')
+            return redirect('manage_mini_site')
+            
+        form = CustomLinkForm(request.POST)
+        if form.is_valid():
+            link = form.save(commit=False)
+            link.profile = profile
+            link.save()
+            messages.success(request, 'لینک جدید با موفقیت اضافه شد.')
+            return redirect('manage_mini_site')
+    else:
+        form = CustomLinkForm()
+        
+    context = {
+        'profile': profile,
+        'links': links,
+        'form': form,
+    }
+    return render(request, 'manage_mini_site.html', context)
+
+
+@login_required
+def delete_custom_link(request, pk):
+    sub, _ = Subscription.objects.get_or_create(user=request.user)
+    if not sub.check_active():
+        return redirect('subscription_page')
+        
+    link = CustomLink.objects.filter(pk=pk, profile=request.user.profile).first()
+    if link:
+        link.delete()
+        messages.success(request, 'لینک حذف شد.')
+    return redirect('manage_mini_site')
+
+
+def public_mini_site(request, username):
+    user_obj = get_object_or_404(User, username=username)
+    profile = user_obj.profile
+    
+    sub, _ = Subscription.objects.get_or_create(user=user_obj)
+    if not sub.check_active():
+        return render(request, 'mini_site_inactive.html')
+        
+    context = {
+        'profile_user': user_obj,
+        'profile': profile,
+        'links': profile.custom_links.all(),
+    }
+    return render(request, 'mini_site_public.html', context)

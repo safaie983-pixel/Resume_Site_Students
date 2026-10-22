@@ -17,12 +17,17 @@
             <p style="color: #94a3b8; font-size: 14px;">مدیریت پروفایل، مهارت‌ها، پروژه‌ها و رزومه</p>
         </div>
     </div>
+    
+    <!-- دکمه‌های داشبورد (مشاهده مینی‌سایت اضافه شد) -->
     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
         <a href="{% url 'public_profile' user.username %}" class="btn" style="background: linear-gradient(135deg, #06b6d4, #0ea5e9);">👁 مشاهده پروفایل</a>
         <a href="{% url 'edit_profile' %}" class="btn">✏️ ویرایش پروفایل</a>
+        <a href="{% url 'public_mini_site' user.username %}" target="_blank" class="btn" style="background: linear-gradient(135deg, #10b981, #059669);">👁 مشاهده مینی‌سایت</a>
+        <a href="{% url 'manage_mini_site' %}" class="btn" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);">⚙️ مدیریت مینی‌سایت</a>
     </div>
 </div>
 
+<!-- آمار پروفایل -->
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 30px;">
     <div style="background: rgba(139, 92, 246, 0.12); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 16px; padding: 18px; text-align: center;">
         <div style="font-size: 26px; font-weight: 800; color: #a78bfa;">{{ stats.profile_completion }}%</div>
