@@ -232,63 +232,23 @@
         #themeToggle { transition: all 0.3s ease; }
         #themeToggle:hover { transform: scale(1.1); box-shadow: 0 12px 35px rgba(139, 92, 246, 0.7) !important; }
 
-        /* ========================================= */
-        /* ===== کدهای واکنش‌گرا (Mobile) ===== */
-        /* ========================================= */
+        /* ===== Responsive Mobile ===== */
         @media (max-width: 768px) {
-            nav {
-                flex-direction: column;
-                padding: 15px 20px;
-                gap: 15px;
-            }
-            nav .links {
-                gap: 8px;
-                width: 100%;
-                justify-content: center;
-            }
+            nav { flex-direction: column; padding: 15px 20px; gap: 15px; }
+            nav .links { gap: 8px; width: 100%; justify-content: center; }
             nav a { font-size: 13px; padding: 8px 12px; }
             nav .user-badge { font-size: 12px; padding: 5px 12px; }
-            
-            .container {
-                margin: 20px auto;
-                padding: 0 15px;
-            }
-            .card {
-                padding: 25px 20px;
-                border-radius: 16px;
-            }
+            .container { margin: 20px auto; padding: 0 15px; }
+            .card { padding: 25px 20px; border-radius: 16px; }
             h1 { font-size: 24px; }
             h2 { font-size: 20px; }
             p { font-size: 14px; }
-            
-            button, .btn {
-                width: 100%;
-                margin-bottom: 8px;
-                padding: 12px 15px;
-            }
-            
-            /* تغییر گریدها به یک ستونه در موبایل */
-            div[style*="display: grid"], 
-            div[style*="display:flex"] {
-                grid-template-columns: 1fr !important;
-                flex-direction: column !important;
-                gap: 10px !important;
-            }
-            div[style*="display: flex; gap: 10px"] {
-                flex-direction: row !important; /* دکمه‌های کنار هم بمونن */
-                flex-wrap: wrap !important;
-            }
-            div[style*="display: flex; gap: 15px; justify-content: center"] {
-                flex-direction: column !important;
-            }
-            
-            /* اصلاح کادر جستجو */
-            form[style*="display: flex"] {
-                flex-direction: column !important;
-            }
-            form[style*="display: flex"] input {
-                width: 100% !important;
-            }
+            button, .btn { width: 100%; margin-bottom: 8px; padding: 12px 15px; }
+            div[style*="display: grid"], div[style*="display:flex"] { grid-template-columns: 1fr !important; flex-direction: column !important; gap: 10px !important; }
+            div[style*="display: flex; gap: 10px"] { flex-direction: row !important; flex-wrap: wrap !important; }
+            div[style*="display: flex; gap: 15px; justify-content: center"] { flex-direction: column !important; }
+            form[style*="display: flex"] { flex-direction: column !important; }
+            form[style*="display: flex"] input { width: 100% !important; }
         }
     </style>
 </head>
@@ -304,8 +264,10 @@
         </a>
         <div class="links">
             <a href="{% url 'home' %}">خانه</a>
+            <a href="{% url 'job_list' %}">آگهی‌های کار 💼</a>
             {% if user.is_authenticated %}
                 <a href="{% url 'dashboard' %}">داشبورد</a>
+                <a href="{% url 'inbox' %}">پیام‌ها 💬</a>
                 <span class="user-badge"><span class="dot"></span> {{ user.username }}</span>
                 <a href="{% url 'logout' %}">خروج</a>
             {% else %}

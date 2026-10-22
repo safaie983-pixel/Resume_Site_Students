@@ -35,6 +35,11 @@ urlpatterns = [
     path('inbox/', views.inbox, name='inbox'),
     path('inbox/<str:username>/', views.chat_room, name='chat_room'),
 
+    # بخش آگهی‌های کار (فریلنسری)
+    path('jobs/', views.job_list, name='job_list'),
+    path('jobs/add/', views.add_job, name='add_job'),
+    path('jobs/delete/<int:pk>/', views.delete_job, name='delete_job'),
+
     # بخش پروفایل عمومی
     path('u/<str:username>/', views.public_profile, name='public_profile'),
     path('u/<str:username>/pdf/', views.download_resume_pdf, name='download_resume_pdf'),

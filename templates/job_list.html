@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}آگهی‌های کار{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+    <div>
+        <h1 style="margin-bottom: 5px;">💼 فرصت‌های شغلی و فریلنسری</h1>
+        <p style="color: #94a3b8; font-size: 14px;">آگهی‌های ثبت شده توسط کاربران سایت</p>
+    </div>
+    
+    {% if user.is_authenticated %}
+        {% if is_sub_active %}
+            <a href="{% url 'add_job' %}" class="btn" style="background: linear-gradient(135deg, #10b981, #059669);">+ ثبت آگهی جدید</a>
+        {% else %}
+            <a href="{% url 'subscription_page' %}" class="btn" style="background: rgba(100, 116, 139, 0.3); box-shadow: none; border: 1px solid rgba(255,255,255,0.2);">🔒 برای ثبت آگهی، اشتراک تهیه کنید</a>
+        {% endif %}
+    {% endif %}
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+    <div style="background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.4); border-radius: 12px; padding: 15px 20px; margin-bottom: 25px; text-align: center;">
+        <strong style="color: #86efac;">✅ {{ message }}</strong>
+    </div>
+    {% endfor %}
+{% endif %}
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+    {% for job in jobs %}
+    <div style="background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 16px; padding: 25px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                <h3 style="color: #c4b5fd; font-size: 18px; margin: 0;">{{ job.title }}</h3>
+                {% if job.user == request.user %}
+                <a href="{% url 'delete_job' job.pk %}" style="color: #f87171; font-size: 13px; text-decoration: none;">حذف</a>
+                {% endif %}
+            </div>
+            
+            <p style="color: #cbd5e1; font-size: 14px; line-height: 1.8; margin-bottom: 20px;">{{ job.description }}</p>
+        </div>
+        
+        <div>
+            <div style="background: rgba(15, 23, 42, 0.5); padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 15px;">
+                <div style="margin-bottom: 5px;"><strong style="color: #fbbf24;">💰 بودجه:</strong> <span style="color: #e2e8f0;">{{ job.budget }}</span></div>
+                <div><strong style="color: #22d3ee;">👤 ثبت‌کننده:</strong> <a href="{% url 'public_profile' job.user.username %}" style="color: #e2e8f0; text-decoration: none;">{{ job.user.profile.full_name|default:job.user.username }}</a></div>
+            </div>
+            <div style="font-size: 11px; color: #64748b; text-align: left;">
+                {{ job.created_at|date:"Y/m/d - H:i" }}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div style="grid-column: 1 / -1; text-align: center; padding: 50px 0;">
+        <div style="font-size: 50px; margin-bottom: 20px;">📭</div>
+        <h3 style="color: #94a3b8;">هیچ آگهی کاری ثبت نشده است.</h3>
+        <p style="color: #64748b; font-size: 14px;">اولین نفری باشید که یک آگهی ثبت می‌کند!</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

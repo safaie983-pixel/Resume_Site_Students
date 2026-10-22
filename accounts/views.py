@@ -315,3 +315,54 @@ def chat_room(request, username):
         'chat_messages': chat_messages,
     }
     return render(request, 'chat_room.html', context)
+
+
+# ==================== بخش آگهی‌های کار (فریلنسری) ====================
+
+def job_list(request):
+    # همه می‌توانند آگهی‌ها را ببینند
+    jobs = JobPost.objects.filter(is_active=True).order_by('-created_at')
+    
+    # بررسی وضعیت اشتراک برای دکمه ثبت آگهی
+    is_sub_active = False
+    if request.user.is_authenticated:
+        sub, _ = Subscription.objects.get_or_create(user=request.user)
+        is_sub_active = sub.check_active()
+        
+    context = {
+        'jobs': jobs,
+        'is_sub_active': is_sub_active,
+    }
+    return render(request, 'job_list.html', context)
+
+
+@login_required
+def add_job(request):
+    # فقط کاربران با اشتراک فعال می‌توانند آگهی ثبت کنند
+    sub, _ = Subscription.objects.get_or_create(user=request.user)
+    if not sub.check_active():
+        messages.warning(request, 'برای ثبت آگهی کار، باید اشتراک فعال داشته باشید.')
+        return redirect('subscription_page')
+
+    if request.method == 'POST':
+        form = JobPostForm(request.POST)
+        if form.is_valid():
+            job = form.save(commit=False)
+            job.user = request.user
+            job.save()
+            messages.success(request, 'آگهی کار شما با موفقیت ثبت شد.')
+            return redirect('job_list')
+    else:
+        form = JobPostForm()
+    
+    return render(request, 'add_item.html', {'form': form, 'title': 'ثبت آگهی کار جدید'})
+
+
+@login_required
+def delete_job(request, pk):
+    # فقط صاحب آگهی می‌تواند آن را حذف کند
+    job = JobPost.objects.filter(pk=pk, user=request.user).first()
+    if job:
+        job.delete()
+        messages.success(request, 'آگهی با موفقیت حذف شد.')
+    return redirect('job_list')
