@@ -1,12 +1,23 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.db import models
+from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import RegisterForm, ProfileForm, SkillForm, ExperienceForm, EducationForm, ProjectForm, CertificateForm
-from .models import Skill, Experience, Education, Project, Certificate
+from django.utils import timezone
+import urllib.request
+import json
+
+from .forms import (
+    RegisterForm, ProfileForm, SkillForm, ExperienceForm, EducationForm, 
+    ProjectForm, CertificateForm, PaymentReceiptForm, JobPostForm
+)
+from .models import (
+    Profile, Skill, Experience, Education, Project, Certificate, 
+    Subscription, PaymentReceipt, Message, JobPost
+)
 from .pdf_utils import render_to_pdf
 
 
@@ -31,21 +42,8 @@ def calculate_profile_completion(profile):
 def home(request):
     query = request.GET.get('q', '').strip()
     if query:
-        users = User.objects.filter(
-            is_active=True
-        ).filter(
-            models.Q(username__icontains=query) |
-            models.Q(profile__full_name__icontains=query) |
-            models.Q(profile__job_title__icontains=query) |
-            models.Q(profile__skills__name__icontains=query) |
-            models.Q(profile__experiences__title__icontains=query) |
-            models.Q(profile__experiences__company__icontains=query) |
-            models.Q(profile__educations__field__icontains=query) |
-            models.Q(profile__educations__university__icontains=query) |
-            models.Q(profile__projects__title__icontains=query) |
-            models.Q(profile__projects__technologies__icontains=query) |
-            models.Q(profile__certificates__title__icontains=query) |
-            models.Q(profile__certificates__issuer__icontains=query)
+        users = User.objects.filter(is_active=True).filter(
+            models.Q(username__icontains=query) | models.Q(profile__full_name__icontains=query)
         ).distinct()
     else:
         users = User.objects.filter(is_active=True).order_by('-date_joined')[:12]
@@ -83,25 +81,27 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
+    # دقیقا مثل قبل: اگر پروفایل نباشه، خطای User has no profile میده
     profile = request.user.profile
-    skills = profile.skills.all()
-    experiences = profile.experiences.all()
-    educations = profile.educations.all()
-    projects = profile.projects.all()
-    certificates = profile.certificates.all()
+    
+    subscription, created_sub = Subscription.objects.get_or_create(user=request.user)
+    is_sub_active = subscription.check_active()
+    
     context = {
         'profile': profile,
-        'skills': skills,
-        'experiences': experiences,
-        'educations': educations,
-        'projects': projects,
-        'certificates': certificates,
+        'skills': profile.skills.all(),
+        'experiences': profile.experiences.all(),
+        'educations': profile.educations.all(),
+        'projects': profile.projects.all(),
+        'certificates': profile.certificates.all(),
+        'subscription': subscription,
+        'is_sub_active': is_sub_active,
         'stats': {
-            'skills_count': skills.count(),
-            'experiences_count': experiences.count(),
-            'educations_count': educations.count(),
-            'projects_count': projects.count(),
-            'certificates_count': certificates.count(),
+            'skills_count': profile.skills.count(),
+            'experiences_count': profile.experiences.count(),
+            'educations_count': profile.educations.count(),
+            'projects_count': profile.projects.count(),
+            'certificates_count': profile.certificates.count(),
             'profile_completion': calculate_profile_completion(profile),
         }
     }
@@ -120,120 +120,72 @@ def edit_profile(request):
         form = ProfileForm(instance=profile)
     return render(request, 'edit_profile.html', {'form': form})
 
-
 @login_required
 def add_skill(request):
     if request.method == 'POST':
         form = SkillForm(request.POST)
         if form.is_valid():
-            skill = form.save(commit=False)
-            skill.profile = request.user.profile
-            skill.save()
+            skill = form.save(commit=False); skill.profile = request.user.profile; skill.save()
             return redirect('dashboard')
-    else:
-        form = SkillForm()
+    else: form = SkillForm()
     return render(request, 'add_item.html', {'form': form, 'title': 'افزودن مهارت جدید'})
-
 
 @login_required
 def add_experience(request):
     if request.method == 'POST':
         form = ExperienceForm(request.POST)
         if form.is_valid():
-            exp = form.save(commit=False)
-            exp.profile = request.user.profile
-            exp.save()
+            exp = form.save(commit=False); exp.profile = request.user.profile; exp.save()
             return redirect('dashboard')
-    else:
-        form = ExperienceForm()
+    else: form = ExperienceForm()
     return render(request, 'add_item.html', {'form': form, 'title': 'افزودن تجربه کاری جدید'})
-
 
 @login_required
 def add_education(request):
     if request.method == 'POST':
         form = EducationForm(request.POST)
         if form.is_valid():
-            edu = form.save(commit=False)
-            edu.profile = request.user.profile
-            edu.save()
+            edu = form.save(commit=False); edu.profile = request.user.profile; edu.save()
             return redirect('dashboard')
-    else:
-        form = EducationForm()
+    else: form = EducationForm()
     return render(request, 'add_item.html', {'form': form, 'title': 'افزودن تحصیلات جدید'})
-
 
 @login_required
 def add_project(request):
     if request.method == 'POST':
         form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
-            project = form.save(commit=False)
-            project.profile = request.user.profile
-            project.save()
+            project = form.save(commit=False); project.profile = request.user.profile; project.save()
             return redirect('dashboard')
-    else:
-        form = ProjectForm()
+    else: form = ProjectForm()
     return render(request, 'add_item.html', {'form': form, 'title': 'افزودن پروژه جدید'})
-
 
 @login_required
 def add_certificate(request):
     if request.method == 'POST':
         form = CertificateForm(request.POST)
         if form.is_valid():
-            cert = form.save(commit=False)
-            cert.profile = request.user.profile
-            cert.save()
+            cert = form.save(commit=False); cert.profile = request.user.profile; cert.save()
             return redirect('dashboard')
-    else:
-        form = CertificateForm()
+    else: form = CertificateForm()
     return render(request, 'add_item.html', {'form': form, 'title': 'افزودن گواهی‌نامه جدید'})
 
-
 @login_required
-def delete_skill(request, pk):
-    skill = Skill.objects.filter(pk=pk, profile=request.user.profile).first()
-    if skill:
-        skill.delete()
-    return redirect('dashboard')
-
-
+def delete_skill(request, pk): Skill.objects.filter(pk=pk, profile=request.user.profile).delete(); return redirect('dashboard')
 @login_required
-def delete_experience(request, pk):
-    exp = Experience.objects.filter(pk=pk, profile=request.user.profile).first()
-    if exp:
-        exp.delete()
-    return redirect('dashboard')
-
-
+def delete_experience(request, pk): Experience.objects.filter(pk=pk, profile=request.user.profile).delete(); return redirect('dashboard')
 @login_required
-def delete_education(request, pk):
-    edu = Education.objects.filter(pk=pk, profile=request.user.profile).first()
-    if edu:
-        edu.delete()
-    return redirect('dashboard')
-
-
+def delete_education(request, pk): Education.objects.filter(pk=pk, profile=request.user.profile).delete(); return redirect('dashboard')
 @login_required
-def delete_project(request, pk):
-    project = Project.objects.filter(pk=pk, profile=request.user.profile).first()
-    if project:
-        project.delete()
-    return redirect('dashboard')
-
-
+def delete_project(request, pk): Project.objects.filter(pk=pk, profile=request.user.profile).delete(); return redirect('dashboard')
 @login_required
-def delete_certificate(request, pk):
-    cert = Certificate.objects.filter(pk=pk, profile=request.user.profile).first()
-    if cert:
-        cert.delete()
-    return redirect('dashboard')
+def delete_certificate(request, pk): Certificate.objects.filter(pk=pk, profile=request.user.profile).delete(); return redirect('dashboard')
 
 
 def public_profile(request, username):
     user_obj = get_object_or_404(User, username=username)
     profile = user_obj.profile
+    
     context = {
         'profile_user': user_obj,
         'profile': profile,
@@ -249,6 +201,7 @@ def public_profile(request, username):
 def download_resume_pdf(request, username):
     user_obj = get_object_or_404(User, username=username)
     profile = user_obj.profile
+    
     context = {
         'profile_user': user_obj,
         'profile': profile,
@@ -261,7 +214,50 @@ def download_resume_pdf(request, username):
     pdf = render_to_pdf('resume_pdf.html', context)
     if pdf:
         response = HttpResponse(pdf, content_type='application/pdf')
-        filename = f'resume-{username}.pdf'
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        response['Content-Disposition'] = f'attachment; filename="resume-{username}.pdf"'
         return response
     return HttpResponse('خطا در ساخت PDF', status=500)
+
+
+# ==================== بخش اشتراک ====================
+
+def get_dollar_price_toman():
+    try:
+        req = urllib.request.Request("https://api.navasan.tech/latest/?api_key=freeTRIAL", headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=5) as response:
+            data = json.loads(response.read().decode())
+            return int(data.get('usd', {}).get('value', 600000)) / 10 
+    except:
+        return 60000
+
+@login_required
+def subscription_page(request):
+    subscription, created = Subscription.objects.get_or_create(user=request.user)
+    is_active = subscription.check_active()
+    
+    dollar_price = get_dollar_price_toman()
+    total_price = int(dollar_price * 1.5)
+    
+    receipt_form = PaymentReceiptForm()
+    
+    context = {
+        'subscription': subscription,
+        'is_active': is_active,
+        'dollar_price': dollar_price,
+        'total_price': total_price,
+        'receipt_form': receipt_form,
+    }
+    return render(request, 'subscription.html', context)
+
+
+@login_required
+def upload_receipt(request):
+    if request.method == 'POST':
+        form = PaymentReceiptForm(request.POST, request.FILES)
+        if form.is_valid():
+            receipt = form.save(commit=False)
+            receipt.user = request.user
+            receipt.save()
+            messages.success(request, 'فیش واریزی شما با موفقیت ثبت شد و در انتظار تایید مدیر است.')
+            return redirect('subscription_page')
+    return redirect('subscription_page')

@@ -1,7 +1,10 @@
 ﻿from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, Skill, Experience, Education, Project, Certificate
+from .models import (
+    Profile, Skill, Experience, Education, Project, Certificate, 
+    CustomLink, PaymentReceipt, JobPost
+)
 
 
 class RegisterForm(UserCreationForm):
@@ -21,7 +24,7 @@ class RegisterForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['full_name', 'job_title', 'email', 'phone', 'location', 'website', 'avatar', 'linkedin', 'github', 'twitter', 'bio']
+        fields = ['full_name', 'job_title', 'email', 'phone', 'location', 'website', 'avatar', 'linkedin', 'github', 'twitter', 'bio', 'theme']
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 4}),
         }
@@ -83,3 +86,31 @@ class CertificateForm(forms.ModelForm):
     class Meta:
         model = Certificate
         fields = ['title', 'issuer', 'issue_date', 'link']
+
+
+class PaymentReceiptForm(forms.ModelForm):
+    class Meta:
+        model = PaymentReceipt
+        fields = ['image']
+        widgets = {
+            'image': forms.FileInput(attrs={'accept': 'image/*'}),
+        }
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if image:
+            if image.size > 5 * 1024 * 1024:
+                raise forms.ValidationError('حجم فیش نباید بیشتر از ۵ مگابایت باشه')
+            name = image.name.lower()
+            if not (name.endswith('.jpg') or name.endswith('.jpeg') or name.endswith('.png') or name.endswith('.webp')):
+                raise forms.ValidationError('فقط فرمت‌های JPG، PNG و WebP پشتیبانی می‌شن')
+        return image
+
+
+class JobPostForm(forms.ModelForm):
+    class Meta:
+        model = JobPost
+        fields = ['title', 'description', 'budget']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+        }
