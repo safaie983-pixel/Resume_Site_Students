@@ -31,6 +31,10 @@ urlpatterns = [
     path('subscription/', views.subscription_page, name='subscription_page'),
     path('subscription/upload/', views.upload_receipt, name='upload_receipt'),
     
+    # بخش چت (پیام‌رسان)
+    path('inbox/', views.inbox, name='inbox'),
+    path('inbox/<str:username>/', views.chat_room, name='chat_room'),
+
     # بخش پروفایل عمومی
     path('u/<str:username>/', views.public_profile, name='public_profile'),
     path('u/<str:username>/pdf/', views.download_resume_pdf, name='download_resume_pdf'),

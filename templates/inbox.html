@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}صندوق پیام‌ها{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+    <div>
+        <h1 style="margin-bottom: 5px;">💬 صندوق پیام‌ها</h1>
+        <p style="color: #94a3b8; font-size: 14px;">پیام‌های خود را مدیریت کنید</p>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+    
+    <!-- ستون گفتگوهای اخیر -->
+    <div style="background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 16px; padding: 25px;">
+        <h2 style="font-size: 20px; margin-bottom: 20px;">گفتگوهای اخیر</h2>
+        
+        {% if chat_users %}
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                {% for u in chat_users %}
+                <a href="{% url 'chat_room' u.username %}" style="text-decoration: none; display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(15, 23, 42, 0.5); border-radius: 12px; transition: 0.3s;">
+                    {% if u.profile.avatar %}
+                    <img src="{{ u.profile.avatar.url }}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;">
+                    {% else %}
+                    <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #06b6d4); display: flex; align-items: center; justify-content: center; font-weight: bold; color: white;">
+                        {{ u.username|first|upper }}
+                    </div>
+                    {% endif %}
+                    <div>
+                        <div style="color: #e2e8f0; font-weight: 600;">{{ u.profile.full_name|default:u.username }}</div>
+                        <div style="color: #94a3b8; font-size: 13px;">@{{ u.username }}</div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="color: #64748b; text-align: center; padding: 20px 0;">هنوز گفتگویی ندارید.</p>
+        {% endif %}
+    </div>
+
+    <!-- ستون شروع چت جدید -->
+    <div style="background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 16px; padding: 25px;">
+        <h2 style="font-size: 20px; margin-bottom: 20px;">شروع گفتگوی جدید</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 5px;">
+            {% for u in all_users %}
+            <a href="{% url 'chat_room' u.username %}" style="text-decoration: none; display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(15, 23, 42, 0.5); border-radius: 12px; transition: 0.3s;">
+                {% if u.profile.avatar %}
+                <img src="{{ u.profile.avatar.url }}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;">
+                {% else %}
+                <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #06b6d4, #22d3ee); display: flex; align-items: center; justify-content: center; font-weight: bold; color: white;">
+                    {{ u.username|first|upper }}
+                </div>
+                {% endif %}
+                <div>
+                    <div style="color: #e2e8f0; font-weight: 600;">{{ u.profile.full_name|default:u.username }}</div>
+                    <div style="color: #94a3b8; font-size: 13px;">@{{ u.username }}</div>
+                </div>
+            </a>
+            {% empty %}
+            <p style="color: #64748b; text-align: center;">کاربر دیگری در سایت وجود ندارد.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

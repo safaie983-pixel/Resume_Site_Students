@@ -63,12 +63,13 @@ def register(request):
 
 
 def login_view(request):
+    next_url = request.GET.get('next', 'home') 
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            return redirect('home')
+            return redirect(next_url)
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
@@ -81,9 +82,7 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
-    # دقیقا مثل قبل: اگر پروفایل نباشه، خطای User has no profile میده
     profile = request.user.profile
-    
     subscription, created_sub = Subscription.objects.get_or_create(user=request.user)
     is_sub_active = subscription.check_active()
     
@@ -185,7 +184,6 @@ def delete_certificate(request, pk): Certificate.objects.filter(pk=pk, profile=r
 def public_profile(request, username):
     user_obj = get_object_or_404(User, username=username)
     profile = user_obj.profile
-    
     context = {
         'profile_user': user_obj,
         'profile': profile,
@@ -201,7 +199,6 @@ def public_profile(request, username):
 def download_resume_pdf(request, username):
     user_obj = get_object_or_404(User, username=username)
     profile = user_obj.profile
-    
     context = {
         'profile_user': user_obj,
         'profile': profile,
@@ -223,28 +220,19 @@ def download_resume_pdf(request, username):
 
 def get_dollar_price_toman():
     try:
-        # استفاده از API نوبیتکس (قیمت تتر که معادل دلار آزاد است)
-        req = urllib.request.Request(
-            "https://api.nobitex.ir/v2/orderbook/USDTIRT", 
-            headers={'User-Agent': 'Mozilla/5.0'}
-        )
+        req = urllib.request.Request("https://api.nobitex.ir/v2/orderbook/USDTIRT", headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=5) as response:
             data = json.loads(response.read().decode())
-            # قیمت آخرین معامله به ریال است، تقسیم بر 10 میکنیم تا تومان شود
-            price_rial = float(data['lastTradePrice'])
-            return int(price_rial / 10)
-    except Exception as e:
-        # اگر API قطع بود، قیمت پیش‌فرض
+            return int(float(data['lastTradePrice']) / 10)
+    except Exception:
         return 271000
 
 @login_required
 def subscription_page(request):
     subscription, created = Subscription.objects.get_or_create(user=request.user)
     is_active = subscription.check_active()
-    
     dollar_price = get_dollar_price_toman()
     total_price = int(dollar_price * 1.5)
-    
     receipt_form = PaymentReceiptForm()
     
     context = {
@@ -268,3 +256,62 @@ def upload_receipt(request):
             messages.success(request, 'فیش واریزی شما با موفقیت ثبت شد و در انتظار تایید مدیر است.')
             return redirect('subscription_page')
     return redirect('subscription_page')
+
+
+# ==================== بخش چت (پیام‌رسان) ====================
+
+@login_required
+def inbox(request):
+    # بررسی فعال بودن اشتراک
+    sub, _ = Subscription.objects.get_or_create(user=request.user)
+    if not sub.check_active():
+        messages.warning(request, 'برای استفاده از بخش پیام‌رسان، باید اشتراک فعال داشته باشید.')
+        return redirect('subscription_page')
+
+    # پیدا کردن تمام کاربرانی که با این کاربر چت کرده‌اند
+    sent_msgs = Message.objects.filter(sender=request.user).values_list('receiver', flat=True)
+    received_msgs = Message.objects.filter(receiver=request.user).values_list('sender', flat=True)
+    
+    user_ids = set(list(sent_msgs) + list(received_msgs))
+    chat_users = User.objects.filter(id__in=user_ids)
+
+    # گرفتن لیست تمام کاربران دیگر برای شروع چت جدید
+    all_users = User.objects.exclude(id=request.user.id)
+
+    context = {
+        'chat_users': chat_users,
+        'all_users': all_users,
+    }
+    return render(request, 'inbox.html', context)
+
+
+@login_required
+def chat_room(request, username):
+    # بررسی فعال بودن اشتراک
+    sub, _ = Subscription.objects.get_or_create(user=request.user)
+    if not sub.check_active():
+        messages.warning(request, 'برای استفاده از بخش پیام‌رسان، باید اشتراک فعال داشته باشید.')
+        return redirect('subscription_page')
+
+    other_user = get_object_or_404(User, username=username)
+    
+    # گرفتن پیام‌های بین این دو کاربر
+    chat_messages = Message.objects.filter(
+        models.Q(sender=request.user, receiver=other_user) |
+        models.Q(sender=other_user, receiver=request.user)
+    ).order_by('created_at')
+
+    # علامت زدن پیام‌های دریافتی به عنوان خوانده شده
+    Message.objects.filter(sender=other_user, receiver=request.user, is_read=False).update(is_read=True)
+
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            Message.objects.create(sender=request.user, receiver=other_user, content=content)
+            return redirect('chat_room', username=other_user.username)
+
+    context = {
+        'other_user': other_user,
+        'chat_messages': chat_messages,
+    }
+    return render(request, 'chat_room.html', context)
