@@ -223,12 +223,19 @@ def download_resume_pdf(request, username):
 
 def get_dollar_price_toman():
     try:
-        req = urllib.request.Request("https://api.navasan.tech/latest/?api_key=freeTRIAL", headers={'User-Agent': 'Mozilla/5.0'})
+        # استفاده از API سایت TGJU برای قیمت لحظه‌ای دلار آزاد
+        req = urllib.request.Request(
+            "https://api.tgju.org/v1/market/indicator/summary-table-data/price_dollar_rl", 
+            headers={'User-Agent': 'Mozilla/5.0'}
+        )
         with urllib.request.urlopen(req, timeout=5) as response:
             data = json.loads(response.read().decode())
-            return int(data.get('usd', {}).get('value', 600000)) / 10 
-    except:
-        return 60000
+            # قیمتی که TGJU برمی‌گردونه به ریاله (مثلا 6,550,000) که با تقسیم بر 10 تومان می‌شه
+            price_rial = int(data['data'][0]['p'].replace(',', ''))
+            return price_rial // 10
+    except Exception as e:
+        # اگر API قطع بود، قیمت پیش‌فرض 650,000 تومان (قیمت واقعی امروز)
+        return 650000
 
 @login_required
 def subscription_page(request):
