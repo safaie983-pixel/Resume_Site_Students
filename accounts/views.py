@@ -42,7 +42,6 @@ def calculate_profile_completion(profile):
 def home(request):
     query = request.GET.get('q', '').strip()
     if query:
-        # جستجوی پیشرفته در نام، عنوان شغلی، مهارت‌ها، پروژه‌ها و ...
         users = User.objects.filter(is_active=True).filter(
             models.Q(username__icontains=query) |
             models.Q(profile__full_name__icontains=query) |
@@ -367,14 +366,23 @@ def manage_mini_site(request):
     links = profile.custom_links.all()
     
     if request.method == 'POST':
+        # دکمه ساخت مینی‌سایت
+        if 'create_site' in request.POST:
+            profile.has_mini_site = True
+            profile.save()
+            messages.success(request, 'مینی‌سایت شما با موفقیت ساخته شد! حالا می‌توانید آن را شخصی‌سازی کنید.')
+            return redirect('manage_mini_site')
+
+        # بروزرسانی تم
         if 'update_theme' in request.POST:
             new_theme = request.POST.get('theme')
-            if new_theme in ['dark', 'light', 'neon']:
+            if new_theme in ['dark', 'light', 'neon', 'ocean', 'sunset', 'forest']:
                 profile.theme = new_theme
                 profile.save()
                 messages.success(request, 'تم مینی‌سایت شما با موفقیت تغییر کرد.')
             return redirect('manage_mini_site')
             
+        # افزودن لینک
         form = CustomLinkForm(request.POST)
         if form.is_valid():
             link = form.save(commit=False)
@@ -411,12 +419,20 @@ def public_mini_site(request, username):
     profile = user_obj.profile
     
     sub, _ = Subscription.objects.get_or_create(user=user_obj)
-    if not sub.check_active():
+    
+    # بررسی اینکه کاربر اشتراک دارد و مینی‌سایت را ساخته است
+    if not sub.check_active() or not profile.has_mini_site:
         return render(request, 'mini_site_inactive.html')
         
     context = {
         'profile_user': user_obj,
         'profile': profile,
         'links': profile.custom_links.all(),
+        # اطلاعات کامل رزومه برای نمایش در مینی سایت
+        'skills': profile.skills.all(),
+        'experiences': profile.experiences.all(),
+        'educations': profile.educations.all(),
+        'projects': profile.projects.all(),
+        'certificates': profile.certificates.all(),
     }
     return render(request, 'mini_site_public.html', context)

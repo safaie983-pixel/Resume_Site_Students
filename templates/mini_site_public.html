@@ -10,73 +10,201 @@
     .theme-dark { background: #0a0a1a !important; }
     .theme-light { background: #f5f7fa !important; }
     .theme-neon { background: #000000 !important; }
+    .theme-ocean { background: linear-gradient(135deg, #0f172a, #082f49) !important; }
+    .theme-sunset { background: linear-gradient(135deg, #2e1065, #831843) !important; }
+    .theme-forest { background: linear-gradient(135deg, #064e3b, #022c22) !important; }
 
-    .mini-site-card {
-        max-width: 600px; margin: 40px auto; text-align: center; padding: 40px 30px; border-radius: 24px; transition: all 0.5s ease;
+    .portfolio-container {
+        max-width: 800px; margin: 40px auto; padding: 40px 30px; border-radius: 24px; transition: all 0.5s ease; text-align: center;
     }
 
-    /* استایل کارت برای تم تاریک */
-    .theme-dark .mini-site-card { background: rgba(20, 20, 40, 0.7); border: 1px solid rgba(139, 92, 246, 0.3); box-shadow: 0 20px 50px rgba(0,0,0,0.5); color: #e2e8f0; }
-    .theme-dark .mini-site-card h1, .theme-dark .mini-site-card p { color: #e2e8f0; }
+    /* تم تاریک */
+    .theme-dark .portfolio-container { background: rgba(20, 20, 40, 0.7); border: 1px solid rgba(139, 92, 246, 0.3); box-shadow: 0 20px 50px rgba(0,0,0,0.5); color: #e2e8f0; }
+    .theme-dark .section-title { color: #a78bfa; border-bottom: 1px solid rgba(139, 92, 246, 0.3); }
+    .theme-dark .item-card { background: rgba(15, 23, 42, 0.6); border-right: 3px solid #8b5cf6; }
     .theme-dark .mini-link { background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.4); color: #e2e8f0; }
     .theme-dark .mini-link:hover { background: rgba(139, 92, 246, 0.3); }
+    .theme-dark .social-btn { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
 
-    /* استایل کارت برای تم روشن */
-    .theme-light .mini-site-card { background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 20px 50px rgba(0,0,0,0.05); color: #1e293b; }
-    .theme-light .mini-site-card h1, .theme-light .mini-site-card p { color: #1e293b; }
+    /* تم روشن */
+    .theme-light .portfolio-container { background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 20px 50px rgba(0,0,0,0.05); color: #1e293b; }
+    .theme-light .section-title { color: #3b82f6; border-bottom: 1px solid #cbd5e1; }
+    .theme-light .item-card { background: #f8fafc; border-right: 3px solid #3b82f6; }
     .theme-light .mini-link { background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; }
-    .theme-light .mini-link:hover { background: #f1f5f9; border-color: #94a3b8; }
+    .theme-light .mini-link:hover { background: #f1f5f9; }
+    .theme-light .social-btn { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
 
-    /* استایل کارت برای تم نئون */
-    .theme-neon .mini-site-card { background: #111; border: 2px solid #0ff; box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.1); color: #0ff; }
-    .theme-neon .mini-site-card h1 { color: #0ff; text-shadow: 0 0 10px #0ff; }
-    .theme-neon .mini-site-card p { color: #0ff; text-shadow: 0 0 5px #0ff; }
+    /* تم نئون */
+    .theme-neon .portfolio-container { background: #111; border: 2px solid #0ff; box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.1); color: #0ff; }
+    .theme-neon .section-title { color: #0ff; border-bottom: 1px solid #0ff; text-shadow: 0 0 5px #0ff; }
+    .theme-neon .item-card { background: #000; border-right: 3px solid #f0f; color: #0ff; }
     .theme-neon .mini-link { background: transparent; border: 2px solid #f0f; color: #f0f; box-shadow: 0 0 10px rgba(255, 0, 255, 0.5); text-shadow: 0 0 5px #f0f; }
     .theme-neon .mini-link:hover { background: rgba(255, 0, 255, 0.1); box-shadow: 0 0 20px rgba(255, 0, 255, 0.8); }
+    .theme-neon .social-btn { background: transparent; border: 1px solid #0ff; color: #0ff; text-shadow: 0 0 5px #0ff; }
 
-    /* استایل مشترک برای لینک‌ها */
-    .mini-link {
-        display: block; padding: 16px 20px; border-radius: 12px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; margin-bottom: 12px; font-size: 15px;
-    }
+    /* تم اقیانوس */
+    .theme-ocean .portfolio-container { background: rgba(8, 47, 73, 0.8); border: 1px solid #0ea5e9; box-shadow: 0 20px 50px rgba(0,0,0,0.5); color: #e0f2fe; }
+    .theme-ocean .section-title { color: #38bdf8; border-bottom: 1px solid #0ea5e9; }
+    .theme-ocean .item-card { background: rgba(12, 74, 110, 0.5); border-right: 3px solid #38bdf8; }
+    .theme-ocean .mini-link { background: rgba(56, 189, 248, 0.1); border: 1px solid #0ea5e9; color: #e0f2fe; }
+    .theme-ocean .mini-link:hover { background: rgba(56, 189, 248, 0.2); }
+    .theme-ocean .social-btn { background: rgba(56, 189, 248, 0.15); color: #e0f2fe; border: 1px solid #0ea5e9; }
+
+    /* تم غروب */
+    .theme-sunset .portfolio-container { background: rgba(46, 16, 101, 0.8); border: 1px solid #d946ef; box-shadow: 0 20px 50px rgba(0,0,0,0.5); color: #fdf4ff; }
+    .theme-sunset .section-title { color: #fbbf24; border-bottom: 1px solid #d946ef; }
+    .theme-sunset .item-card { background: rgba(88, 28, 135, 0.5); border-right: 3px solid #fbbf24; }
+    .theme-sunset .mini-link { background: rgba(217, 70, 239, 0.15); border: 1px solid #d946ef; color: #fdf4ff; }
+    .theme-sunset .mini-link:hover { background: rgba(217, 70, 239, 0.3); }
+    .theme-sunset .social-btn { background: rgba(251, 191, 36, 0.2); color: #fdf4ff; border: 1px solid #fbbf24; }
+
+    /* تم جنگل */
+    .theme-forest .portfolio-container { background: rgba(2, 44, 34, 0.8); border: 1px solid #10b981; box-shadow: 0 20px 50px rgba(0,0,0,0.5); color: #ecfdf5; }
+    .theme-forest .section-title { color: #34d399; border-bottom: 1px solid #10b981; }
+    .theme-forest .item-card { background: rgba(6, 78, 59, 0.5); border-right: 3px solid #34d399; }
+    .theme-forest .mini-link { background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #ecfdf5; }
+    .theme-forest .mini-link:hover { background: rgba(16, 185, 129, 0.3); }
+    .theme-forest .social-btn { background: rgba(52, 211, 153, 0.2); color: #ecfdf5; border: 1px solid #10b981; }
+
+    /* استایل‌های عمومی */
+    .section-title { font-size: 18px; font-weight: 700; margin: 30px 0 15px 0; padding-bottom: 8px; text-align: right; }
+    .item-card { padding: 15px 20px; border-radius: 12px; margin-bottom: 10px; text-align: right; transition: all 0.3s; }
+    .mini-link { display: block; padding: 16px 20px; border-radius: 12px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; margin-bottom: 12px; font-size: 15px; }
+    .social-btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 15px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s; margin: 0 5px; }
+    
+    .skill-bar-bg { width: 100%; height: 6px; background: rgba(128,128,128,0.2); border-radius: 99px; margin-top: 8px; overflow: hidden; }
+    .skill-bar-fill { height: 100%; border-radius: 99px; background: #8b5cf6; }
+    .theme-light .skill-bar-fill { background: #3b82f6; }
+    .theme-neon .skill-bar-fill { background: #0ff; box-shadow: 0 0 10px #0ff; }
+    .theme-ocean .skill-bar-fill { background: #38bdf8; }
+    .theme-sunset .skill-bar-fill { background: #fbbf24; }
+    .theme-forest .skill-bar-fill { background: #34d399; }
 </style>
 
-<!-- اعمال کلاس تم بر اساس انتخاب کاربر -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         document.body.classList.add('theme-{{ profile.theme|default:"dark" }}');
     });
 </script>
 
-<div class="mini-site-card">
-    {% if profile.avatar %}
-    <img src="{{ profile.avatar.url }}" alt="{{ profile_user.username }}" style="width: 110px; height: 110px; margin: 0 auto 20px; border-radius: 50%; object-fit: cover; border: 3px solid {% if profile.theme == 'neon' %}#0ff{% elif profile.theme == 'light' %}#3b82f6{% else %}#8b5cf6{% endif %}; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: block;">
-    {% else %}
-    <div style="width: 110px; height: 110px; margin: 0 auto 20px; border-radius: 50%; background: {% if profile.theme == 'neon' %}#000{% elif profile.theme == 'light' %}#e2e8f0{% else %}#1e293b{% endif %}; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: bold; border: 3px solid {% if profile.theme == 'neon' %}#0ff{% elif profile.theme == 'light' %}#3b82f6{% else %}#8b5cf6{% endif %};">
-        {{ profile_user.username|first|upper }}
+<div class="portfolio-container">
+    
+    <!-- هدر: عکس، نام، عنوان شغلی و بیو -->
+    <div style="text-align: center; margin-bottom: 30px;">
+        {% if profile.avatar %}
+        <img src="{{ profile.avatar.url }}" alt="{{ profile_user.username }}" style="width: 130px; height: 130px; margin: 0 auto 20px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(128,128,128,0.5); box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: block;">
+        {% else %}
+        <div style="width: 130px; height: 130px; margin: 0 auto 20px; border-radius: 50%; background: rgba(128,128,128,0.2); display: flex; align-items: center; justify-content: center; font-size: 45px; font-weight: bold; border: 3px solid rgba(128,128,128,0.3);">
+            {{ profile_user.username|first|upper }}
+        </div>
+        {% endif %}
+
+        <h1 style="font-size: 30px; margin-bottom: 8px;">{{ profile.full_name|default:profile_user.username }}</h1>
+        
+        {% if profile.job_title %}
+        <p style="font-size: 17px; font-weight: 500; opacity: 0.9; margin-bottom: 15px;">{{ profile.job_title }}</p>
+        {% endif %}
+
+        {% if profile.bio %}
+        <p style="line-height: 1.8; opacity: 0.8; font-size: 14px; max-width: 600px; margin: 0 auto 20px;">{{ profile.bio }}</p>
+        {% endif %}
+
+        <!-- دکمه دانلود رزومه و شبکه‌های اجتماعی -->
+        <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+            <a href="{% url 'download_resume_pdf' profile_user.username %}" class="social-btn" style="background: linear-gradient(135deg, #10b981, #059669); color: white !important; border: none;">
+                📄 دانلود رزومه PDF
+            </a>
+            {% if profile.linkedin %}<a href="{{ profile.linkedin }}" target="_blank" class="social-btn">💼 لینکدین</a>{% endif %}
+            {% if profile.github %}<a href="{{ profile.github }}" target="_blank" class="social-btn">🐙 گیت‌هاب</a>{% endif %}
+            {% if profile.twitter %}<a href="{{ profile.twitter }}" target="_blank" class="social-btn">🐦 توییتر</a>{% endif %}
+        </div>
     </div>
-    {% endif %}
 
-    <h1 style="font-size: 28px; margin-bottom: 10px;">{{ profile.full_name|default:profile_user.username }}</h1>
-    {% if profile.job_title %}
-    <p style="font-size: 16px; margin-bottom: 20px;">{{ profile.job_title }}</p>
-    {% endif %}
-
-    {% if profile.bio %}
-    <p style="line-height: 1.8; margin-bottom: 30px; font-size: 14px;">{{ profile.bio }}</p>
-    {% endif %}
-
-    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 30px;">
+    <!-- لینک‌های اختصاصی -->
+    {% if links %}
+    <div class="section-title">🔗 لینک‌های من</div>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
         {% for link in links %}
         <a href="{{ link.url }}" target="_blank" class="mini-link">
             {{ link.title }}
         </a>
-        {% empty %}
-        <p style="font-style: italic; font-size: 13px;">هنوز لینکی توسط این کاربر ثبت نشده است.</p>
         {% endfor %}
     </div>
+    {% endif %}
 
-    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(128,128,128,0.2);">
-        <a href="{% url 'public_profile' profile_user.username %}" style="color: {% if profile.theme == 'neon' %}#f0f{% elif profile.theme == 'light' %}#3b82f6{% else %}#a78bfa{% endif %}; font-size: 13px; text-decoration: none;">مشاهده رزومه کامل در سایت اصلی ←</a>
+    <!-- مهارت‌ها -->
+    {% if skills %}
+    <div class="section-title">⚡ مهارت‌ها</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+        {% for skill in skills %}
+        <div class="item-card" style="border-right: none; padding: 12px 15px;">
+            <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 600;">
+                <span>{{ skill.name }}</span>
+                <span>{{ skill.level }}%</span>
+            </div>
+            <div class="skill-bar-bg">
+                <div class="skill-bar-fill" style="width: {{ skill.level }}%;"></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- پروژه‌ها -->
+    {% if projects %}
+    <div class="section-title">💼 پروژه‌ها</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+        {% for project in projects %}
+        <div class="item-card">
+            {% if project.image %}<img src="{{ project.image.url }}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">{% endif %}
+            <div style="font-weight: bold; font-size: 15px; margin-bottom: 5px;">{{ project.title }}</div>
+            {% if project.technologies %}<div style="font-size: 12px; opacity: 0.8; margin-bottom: 5px;">🛠 {{ project.technologies }}</div>{% endif %}
+            {% if project.description %}<p style="font-size: 13px; opacity: 0.9;">{{ project.description }}</p>{% endif %}
+            {% if project.link %}<a href="{{ project.link }}" target="_blank" style="font-size: 13px; color: inherit; text-decoration: underline;">مشاهده پروژه ←</a>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- تجربه‌های کاری -->
+    {% if experiences %}
+    <div class="section-title">💼 تجربه‌های کاری</div>
+    {% for exp in experiences %}
+    <div class="item-card">
+        <div style="font-weight: bold; font-size: 15px;">{{ exp.title }}</div>
+        <div style="font-size: 13px; opacity: 0.8;">{{ exp.company }} | {{ exp.start_date }} تا {{ exp.end_date|default:"اکنون" }}</div>
+        {% if exp.description %}<p style="font-size: 13px; margin-top: 5px; opacity: 0.9;">{{ exp.description }}</p>{% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- تحصیلات -->
+    {% if educations %}
+    <div class="section-title">🎓 تحصیلات</div>
+    {% for edu in educations %}
+    <div class="item-card">
+        <div style="font-weight: bold; font-size: 15px;">{{ edu.degree }} {{ edu.field }}</div>
+        <div style="font-size: 13px; opacity: 0.8;">{{ edu.university }} | {{ edu.start_year }} - {{ edu.end_year|default:"اکنون" }}</div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- گواهی‌نامه‌ها -->
+    {% if certificates %}
+    <div class="section-title">🏆 گواهی‌نامه‌ها</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+        {% for cert in certificates %}
+        <div class="item-card">
+            <div style="font-weight: bold; font-size: 15px;">{{ cert.title }}</div>
+            <div style="font-size: 13px; opacity: 0.8;">{{ cert.issuer }} {% if cert.issue_date %}| {{ cert.issue_date }}{% endif %}</div>
+            {% if cert.link %}<a href="{{ cert.link }}" target="_blank" style="font-size: 13px; color: inherit; text-decoration: underline; display: inline-block; margin-top: 5px;">مشاهده مدرک ←</a>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid rgba(128,128,128,0.2);">
+        <a href="{% url 'public_profile' profile_user.username %}" style="opacity: 0.8; font-size: 13px; text-decoration: none; color: inherit;">مشاهده رزومه کامل در سایت اصلی ←</a>
     </div>
 </div>
 {% endblock %}

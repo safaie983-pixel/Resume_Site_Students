@@ -9,6 +9,9 @@ class Profile(models.Model):
         ('dark', 'تاریک (پیش‌فرض)'),
         ('light', 'روشن'),
         ('neon', 'نئون'),
+        ('ocean', 'اقیانوس (آبی)'),
+        ('sunset', 'غروب (نارنجی/بنفش)'),
+        ('forest', 'جنگل (سبز)'),
     ]
     
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
@@ -23,7 +26,12 @@ class Profile(models.Model):
     linkedin = models.URLField(blank=True, verbose_name='لینکدین')
     github = models.URLField(blank=True, verbose_name='گیت‌هاب')
     twitter = models.URLField(blank=True, verbose_name='توییتر')
+    
     theme = models.CharField(max_length=20, choices=THEME_CHOICES, default='dark', verbose_name='قالب سایت شخصی')
+    
+    # فیلد جدید: آیا کاربر مینی‌سایت خود را ساخته است یا خیر؟
+    has_mini_site = models.BooleanField(default=False, verbose_name='مینی‌سایت ساخته شده است')
+    
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='آخرین ویرایش')
 
