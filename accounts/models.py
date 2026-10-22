@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from auditlog.registry import auditlog
 from django.utils import timezone
-from datetime import timedelta
 
 
 class Profile(models.Model):
@@ -24,9 +23,7 @@ class Profile(models.Model):
     linkedin = models.URLField(blank=True, verbose_name='لینکدین')
     github = models.URLField(blank=True, verbose_name='گیت‌هاب')
     twitter = models.URLField(blank=True, verbose_name='توییتر')
-    
     theme = models.CharField(max_length=20, choices=THEME_CHOICES, default='dark', verbose_name='قالب سایت شخصی')
-    
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='آخرین ویرایش')
 
@@ -131,8 +128,6 @@ class CustomLink(models.Model):
         return f'{self.title} - {self.profile.user.username}'
 
 
-# ====== سیستم اشتراک ======
-
 class Subscription(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='subscription')
     is_active = models.BooleanField(default=False, verbose_name='وضعیت فعال بودن')
@@ -172,8 +167,6 @@ class PaymentReceipt(models.Model):
         verbose_name_plural = 'فیش‌های واریزی'
 
 
-# ====== سیستم چت (پیام‌رسان) ======
-
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
@@ -189,8 +182,6 @@ class Message(models.Model):
     def __str__(self):
         return f'از {self.sender.username} به {self.receiver.username}'
 
-
-# ====== سیستم فریلنسری (ثبت کار) ======
 
 class JobPost(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='job_posts')
@@ -209,6 +200,17 @@ class JobPost(models.Model):
         return f'{self.title} - {self.user.username}'
 
 
+class SiteSetting(models.Model):
+    subscription_price = models.PositiveIntegerField(default=400000, verbose_name='قیمت اشتراک ماهانه (تومان)')
+
+    class Meta:
+        verbose_name = 'تنظیمات سایت'
+        verbose_name_plural = 'تنظیمات سایت'
+
+    def __str__(self):
+        return f'قیمت اشتراک: {self.subscription_price} تومان'
+
+
 auditlog.register(Profile)
 auditlog.register(Skill)
 auditlog.register(Experience)
@@ -220,3 +222,4 @@ auditlog.register(Subscription)
 auditlog.register(PaymentReceipt)
 auditlog.register(Message)
 auditlog.register(JobPost)
+auditlog.register(SiteSetting)

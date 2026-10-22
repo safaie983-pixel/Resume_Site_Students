@@ -16,7 +16,7 @@ from .forms import (
 )
 from .models import (
     Profile, Skill, Experience, Education, Project, Certificate, 
-    Subscription, PaymentReceipt, Message, JobPost
+    Subscription, PaymentReceipt, Message, JobPost, SiteSetting
 )
 from .pdf_utils import render_to_pdf
 
@@ -218,27 +218,20 @@ def download_resume_pdf(request, username):
 
 # ==================== بخش اشتراک ====================
 
-def get_dollar_price_toman():
-    try:
-        req = urllib.request.Request("https://api.nobitex.ir/v2/orderbook/USDTIRT", headers={'User-Agent': 'Mozilla/5.0'})
-        with urllib.request.urlopen(req, timeout=5) as response:
-            data = json.loads(response.read().decode())
-            return int(float(data['lastTradePrice']) / 10)
-    except Exception:
-        return 271000
-
 @login_required
 def subscription_page(request):
     subscription, created = Subscription.objects.get_or_create(user=request.user)
     is_active = subscription.check_active()
-    dollar_price = get_dollar_price_toman()
-    total_price = int(dollar_price * 1.5)
+    
+    # دریافت قیمت از تنظیمات سایت
+    site_setting, _ = SiteSetting.objects.get_or_create(id=1)
+    total_price = site_setting.subscription_price
+    
     receipt_form = PaymentReceiptForm()
     
     context = {
         'subscription': subscription,
         'is_active': is_active,
-        'dollar_price': dollar_price,
         'total_price': total_price,
         'receipt_form': receipt_form,
     }
@@ -262,20 +255,16 @@ def upload_receipt(request):
 
 @login_required
 def inbox(request):
-    # بررسی فعال بودن اشتراک
     sub, _ = Subscription.objects.get_or_create(user=request.user)
     if not sub.check_active():
         messages.warning(request, 'برای استفاده از بخش پیام‌رسان، باید اشتراک فعال داشته باشید.')
         return redirect('subscription_page')
 
-    # پیدا کردن تمام کاربرانی که با این کاربر چت کرده‌اند
     sent_msgs = Message.objects.filter(sender=request.user).values_list('receiver', flat=True)
     received_msgs = Message.objects.filter(receiver=request.user).values_list('sender', flat=True)
     
     user_ids = set(list(sent_msgs) + list(received_msgs))
     chat_users = User.objects.filter(id__in=user_ids)
-
-    # گرفتن لیست تمام کاربران دیگر برای شروع چت جدید
     all_users = User.objects.exclude(id=request.user.id)
 
     context = {
@@ -287,7 +276,6 @@ def inbox(request):
 
 @login_required
 def chat_room(request, username):
-    # بررسی فعال بودن اشتراک
     sub, _ = Subscription.objects.get_or_create(user=request.user)
     if not sub.check_active():
         messages.warning(request, 'برای استفاده از بخش پیام‌رسان، باید اشتراک فعال داشته باشید.')
@@ -295,13 +283,11 @@ def chat_room(request, username):
 
     other_user = get_object_or_404(User, username=username)
     
-    # گرفتن پیام‌های بین این دو کاربر
     chat_messages = Message.objects.filter(
         models.Q(sender=request.user, receiver=other_user) |
         models.Q(sender=other_user, receiver=request.user)
     ).order_by('created_at')
 
-    # علامت زدن پیام‌های دریافتی به عنوان خوانده شده
     Message.objects.filter(sender=other_user, receiver=request.user, is_read=False).update(is_read=True)
 
     if request.method == 'POST':
@@ -320,10 +306,8 @@ def chat_room(request, username):
 # ==================== بخش آگهی‌های کار (فریلنسری) ====================
 
 def job_list(request):
-    # همه می‌توانند آگهی‌ها را ببینند
     jobs = JobPost.objects.filter(is_active=True).order_by('-created_at')
     
-    # بررسی وضعیت اشتراک برای دکمه ثبت آگهی
     is_sub_active = False
     if request.user.is_authenticated:
         sub, _ = Subscription.objects.get_or_create(user=request.user)
@@ -338,7 +322,6 @@ def job_list(request):
 
 @login_required
 def add_job(request):
-    # فقط کاربران با اشتراک فعال می‌توانند آگهی ثبت کنند
     sub, _ = Subscription.objects.get_or_create(user=request.user)
     if not sub.check_active():
         messages.warning(request, 'برای ثبت آگهی کار، باید اشتراک فعال داشته باشید.')
@@ -360,7 +343,6 @@ def add_job(request):
 
 @login_required
 def delete_job(request, pk):
-    # فقط صاحب آگهی می‌تواند آن را حذف کند
     job = JobPost.objects.filter(pk=pk, user=request.user).first()
     if job:
         job.delete()

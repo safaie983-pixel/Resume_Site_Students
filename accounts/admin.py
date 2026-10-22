@@ -3,7 +3,7 @@ from django.utils import timezone
 from datetime import timedelta
 from .models import (
     Profile, Skill, Experience, Education, Project, Certificate, 
-    CustomLink, Subscription, PaymentReceipt, Message, JobPost
+    CustomLink, Subscription, PaymentReceipt, Message, JobPost, SiteSetting
 )
 
 
@@ -117,3 +117,14 @@ class JobPostAdmin(admin.ModelAdmin):
     list_display = ('title', 'user', 'budget', 'is_active', 'created_at')
     list_filter = ('is_active', 'created_at')
     search_fields = ('title', 'description', 'user__username')
+
+
+@admin.register(SiteSetting)
+class SiteSettingAdmin(admin.ModelAdmin):
+    list_display = ('subscription_price',)
+    
+    # برای اینکه فقط یک رکورد تنظیمات داشته باشیم و ادمین نتونه رکورد جدید بسازه
+    def has_add_permission(self, request):
+        if self.model.objects.exists():
+            return False
+        return True

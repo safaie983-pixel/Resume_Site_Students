@@ -31,14 +31,12 @@
 <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(6, 182, 212, 0.15)); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 20px; padding: 30px; margin-bottom: 30px;">
     <div style="text-align: center; margin-bottom: 25px;">
         <div style="font-size: 18px; color: #a78bfa; margin-bottom: 10px;">اشتراک ماهانه (۳۰ روزه)</div>
-        <div style="font-size: 14px; color: #94a3b8; margin-bottom: 5px;">معادل ۱.۵ دلار</div>
         
-        <!-- قیمت داینامیک -->
-        <div id="dynamic-price" style="font-size: 42px; font-weight: 800; color: #22d3ee; text-shadow: 0 0 20px rgba(34, 211, 238, 0.3);">
-            {{ total_price }} <span style="font-size: 20px; color: #cbd5e1;">تومان</span>
+        <div style="font-size: 42px; font-weight: 800; color: #22d3ee; text-shadow: 0 0 20px rgba(34, 211, 238, 0.3); margin-top: 10px;">
+            {{ total_price|default:"400,000" }} <span style="font-size: 20px; color: #cbd5e1;">تومان</span>
         </div>
         
-        <div style="font-size: 12px; color: #64748b; margin-top: 8px;">*(قیمت بر اساس نرخ لحظه‌ای دلار محاسبه شده است)*</div>
+        <div style="font-size: 12px; color: #64748b; margin-top: 8px;">*(قیمت تعیین شده توسط مدیریت سایت)*</div>
     </div>
 
     <div style="background: rgba(15, 23, 42, 0.6); border-radius: 12px; padding: 20px; margin-bottom: 25px;">
@@ -86,24 +84,4 @@
         <span style="font-size: 13px; color: #94a3b8;">ثبت آگهی فریلنسری و مشاهده کارهای دیگران</span>
     </div>
 </div>
-
-<!-- اسکریپت دریافت قیمت لحظه‌ای -->
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    fetch('https://api.nobitex.ir/v2/orderbook/USDTIRT')
-        .then(response => response.json())
-        .then(data => {
-            if (data.lastTradePrice) {
-                let priceToman = Math.round(parseFloat(data.lastTradePrice) / 10);
-                let totalPrice = Math.round(priceToman * 1.5);
-                
-                let priceElement = document.getElementById('dynamic-price');
-                if (priceElement) {
-                    priceElement.innerHTML = totalPrice.toLocaleString('fa-IR') + ' <span style="font-size: 20px; color: #cbd5e1;">تومان</span>';
-                }
-            }
-        })
-        .catch(error => console.log("Live price fetch failed:", error));
-});
-</script>
 {% endblock %}
