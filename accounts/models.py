@@ -209,7 +209,7 @@ class JobPost(models.Model):
 
 
 class SiteSetting(models.Model):
-    subscription_price = models.PositiveIntegerField(default=300000, verbose_name='قیمت اشتراک ماهانه (تومان)')
+    subscription_price = models.PositiveIntegerField(default=150000, verbose_name='قیمت اشتراک ماهانه (تومان)')
 
     class Meta:
         verbose_name = 'تنظیمات سایت'
