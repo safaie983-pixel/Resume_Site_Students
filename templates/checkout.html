@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}ثبت سفارش{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <h1 style="margin-bottom: 10px;">🛒 ثبت اطلاعات خرید</h1>
+    <p style="color: #94a3b8; margin-bottom: 30px; font-size: 14px;">لطفاً اطلاعات خود را برای ارسال محصول وارد کنید.</p>
+
+    <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 16px; padding: 25px; margin-bottom: 30px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 12px;">
+        {% endif %}
+        <div>
+            <h2 style="font-size: 20px; color: #818cf8; margin-bottom: 8px;">{{ product.name }}</h2>
+            <div style="color: #34d399; font-size: 18px; font-weight: bold;">💰 {{ product.price }} تومان</div>
+            <div style="color: #cbd5e1; font-size: 13px; margin-top: 8px;">فروشنده: {{ product.profile.full_name|default:product.profile.user.username }}</div>
+        </div>
+    </div>
+
+    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 25px;">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #cbd5e1; font-size: 13px;">نام:</label>
+                    {{ form.first_name }}
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #cbd5e1; font-size: 13px;">نام خانوادگی:</label>
+                    {{ form.last_name }}
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #cbd5e1; font-size: 13px;">شماره تماس:</label>
+                    {{ form.phone }}
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #cbd5e1; font-size: 13px;">کد پستی:</label>
+                    {{ form.postal_code }}
+                </div>
+            </div>
+            <div style="margin-top: 15px;">
+                <label style="display: block; margin-bottom: 5px; color: #cbd5e1; font-size: 13px;">استان/شهر:</label>
+                {{ form.location }}
+            </div>
+            <div style="margin-top: 15px;">
+                <label style="display: block; margin-bottom: 5px; color: #cbd5e1; font-size: 13px;">آدرس دقیق:</label>
+                {{ form.address }}
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 25px;">
+                <button type="submit" style="flex: 1; background: linear-gradient(135deg, #6366f1, #4f46e5); font-size: 16px;">ثبت و رفتن به پرداخت</button>
+                <a href="{% url 'public_mini_site' product.profile.user.username %}" class="btn" style="background: rgba(100, 116, 139, 0.3); box-shadow: none; flex: 1; text-align: center;">انصراف</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}پرداخت سفارش{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="font-size: 26px; color: #10b981; margin-bottom: 10px;">💳 پرداخت سفارش</h1>
+        <p style="color: #cbd5e1; font-size: 14px;">سفارش شما با موفقیت ثبت شد. برای تکمیل، لطفاً مبلغ را واریز و فیش را آپلود کنید.</p>
+    </div>
+
+    <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 16px; padding: 25px; margin-bottom: 30px; text-align: center;">
+        <h3 style="color: #a7f3d0; font-size: 16px; margin-bottom: 15px;">مبلغ قابل پرداخت: <span style="font-size: 22px; color: #34d399; font-weight: bold;">{{ order.product.price }} تومان</span></h3>
+        
+        <div style="background: rgba(15, 23, 42, 0.8); padding: 15px; border-radius: 12px; display: inline-block; border: 1px dashed rgba(16, 185, 129, 0.5); margin-top: 10px;">
+            <div style="color: #94a3b8; font-size: 13px; margin-bottom: 5px;">شماره کارت فروشنده ({{ order.seller.profile.full_name|default:order.seller.username }}):</div>
+            <div style="font-size: 24px; font-weight: bold; color: #fbbf24; direction: ltr; letter-spacing: 2px;">
+                {% if order.seller.profile.card_number %}
+                    {{ order.seller.profile.card_number }}
+                {% else %}
+                    <span style="color: #f87171; font-size: 16px;">شماره کارتی توسط فروشنده ثبت نشده است!</span>
+                {% endif %}
+            </div>
+        </div>
+        <p style="color: #f87171; font-size: 12px; margin-top: 15px;">⚠️ لطفاً تا قبل از آپلود فیش، از صحت شماره کارت مطمئن شوید.</p>
+    </div>
+
+    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 25px;">
+        <h3 style="font-size: 18px; margin-bottom: 20px; color: #e2e8f0;">📸 آپلود تصویر فیش پرداخت</h3>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div style="margin-bottom: 20px;">
+                {{ form.receipt_image }}
+            </div>
+            <button type="submit" style="width: 100%; background: linear-gradient(135deg, #10b981, #059669); font-size: 16px;">ارسال فیش و نهایی‌سازی</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

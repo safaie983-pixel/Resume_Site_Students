@@ -47,6 +47,11 @@ urlpatterns = [
     path('mini-site/delete/<int:pk>/', views.delete_custom_link, name='delete_custom_link'),
     path('site/<str:username>/', views.public_mini_site, name='public_mini_site'),
 
+    # بخش خرید و سفارشات (Checkout)
+    path('checkout/<int:product_id>/', views.checkout, name='checkout'),
+    path('payment/<int:order_id>/', views.payment_page, name='payment_page'),
+    path('orders/update-status/<int:order_id>/<str:status>/', views.update_order_status, name='update_order_status'),
+
     # بخش پروفایل عمومی
     path('u/<str:username>/', views.public_profile, name='public_profile'),
     path('u/<str:username>/pdf/', views.download_resume_pdf, name='download_resume_pdf'),

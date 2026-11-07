@@ -28,8 +28,8 @@ class Profile(models.Model):
     twitter = models.URLField(blank=True, verbose_name='توییتر')
     
     theme = models.CharField(max_length=20, choices=THEME_CHOICES, default='dark', verbose_name='قالب سایت شخصی')
-    
     has_mini_site = models.BooleanField(default=False, verbose_name='مینی‌سایت ساخته شده است')
+    card_number = models.CharField(max_length=30, blank=True, verbose_name='شماره کارت برای دریافت وجه')
     
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='آخرین ویرایش')
@@ -122,6 +122,36 @@ class Product(models.Model):
         return f'{self.name} - {self.profile.user.username}'
 
 
+class Order(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'در انتظار بررسی'),
+        ('approved', 'تأیید شده'),
+        ('rejected', 'رد شده'),
+    ]
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='orders', verbose_name='محصول')
+    buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='my_orders', verbose_name='خریدار')
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_orders', verbose_name='فروشنده')
+    
+    first_name = models.CharField(max_length=50, verbose_name='نام')
+    last_name = models.CharField(max_length=50, verbose_name='نام خانوادگی')
+    phone = models.CharField(max_length=20, verbose_name='شماره تماس')
+    address = models.TextField(verbose_name='آدرس دقیق')
+    postal_code = models.CharField(max_length=10, verbose_name='کد پستی')
+    location = models.CharField(max_length=100, verbose_name='استان/شهر')
+    
+    receipt_image = models.ImageField(upload_to='order_receipts/', blank=True, null=True, verbose_name='تصویر فیش پرداخت')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending', verbose_name='وضعیت سفارش')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ثبت')
+
+    class Meta:
+        verbose_name = 'سفارش'
+        verbose_name_plural = 'سفارش‌ها'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'سفارش {self.product.name} توسط {self.buyer.username}'
+
+
 class Certificate(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='certificates')
     title = models.CharField(max_length=150, verbose_name='عنوان گواهی‌نامه')
@@ -187,8 +217,8 @@ class PaymentReceipt(models.Model):
         return f'فیش {self.user.username} - {self.get_status_display()}'
 
     class Meta:
-        verbose_name = 'فیش واریزی'
-        verbose_name_plural = 'فیش‌های واریزی'
+        verbose_name = 'فیش واریزی (اشتراک)'
+        verbose_name_plural = 'فیش‌های واریزی (اشتراک)'
 
 
 class Message(models.Model):
@@ -241,6 +271,7 @@ auditlog.register(Experience)
 auditlog.register(Education)
 auditlog.register(Project)
 auditlog.register(Product)
+auditlog.register(Order)
 auditlog.register(Certificate)
 auditlog.register(CustomLink)
 auditlog.register(Subscription)

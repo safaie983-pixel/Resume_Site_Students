@@ -12,10 +12,11 @@ import json
 
 from .forms import (
     RegisterForm, ProfileForm, SkillForm, ExperienceForm, EducationForm, 
-    ProjectForm, ProductForm, CertificateForm, PaymentReceiptForm, JobPostForm, CustomLinkForm
+    ProjectForm, ProductForm, CertificateForm, PaymentReceiptForm, JobPostForm, CustomLinkForm,
+    CheckoutForm, OrderReceiptForm
 )
 from .models import (
-    Profile, Skill, Experience, Education, Project, Product, Certificate, 
+    Profile, Skill, Experience, Education, Project, Product, Order, Certificate, 
     Subscription, PaymentReceipt, Message, JobPost, SiteSetting, CustomLink
 )
 from .pdf_utils import render_to_pdf
@@ -90,6 +91,9 @@ def dashboard(request):
     subscription, created_sub = Subscription.objects.get_or_create(user=request.user)
     is_sub_active = subscription.check_active()
     
+    # سفارش‌هایی که کاربر به عنوان خریدار ثبت کرده است
+    my_orders = Order.objects.filter(buyer=request.user)
+    
     context = {
         'profile': profile,
         'skills': profile.skills.all(),
@@ -100,6 +104,7 @@ def dashboard(request):
         'certificates': profile.certificates.all(),
         'subscription': subscription,
         'is_sub_active': is_sub_active,
+        'my_orders': my_orders, # اضافه شد
         'stats': {
             'skills_count': profile.skills.count(),
             'experiences_count': profile.experiences.count(),
@@ -174,7 +179,7 @@ def add_product(request):
             product.profile = request.user.profile
             product.save()
             messages.success(request, 'محصول جدید با موفقیت اضافه شد.')
-            return redirect('manage_mini_site')  # هدایت به صفحه مدیریت مینی‌سایت
+            return redirect('manage_mini_site')
     else: 
         form = ProductForm()
     return render(request, 'add_item.html', {'form': form, 'title': 'افزودن محصول جدید'})
@@ -202,7 +207,7 @@ def delete_project(request, pk): Project.objects.filter(pk=pk, profile=request.u
 def delete_product(request, pk): 
     Product.objects.filter(pk=pk, profile=request.user.profile).delete()
     messages.success(request, 'محصول با موفقیت حذف شد.')
-    return redirect('manage_mini_site')  # هدایت به صفحه مدیریت مینی‌سایت
+    return redirect('manage_mini_site')
 
 @login_required
 def delete_certificate(request, pk): Certificate.objects.filter(pk=pk, profile=request.user.profile).delete(); return redirect('dashboard')
@@ -388,6 +393,9 @@ def manage_mini_site(request):
     profile = request.user.profile
     links = profile.custom_links.all()
     
+    # سفارش‌هایی که برای این فروشنده ثبت شده است
+    received_orders = Order.objects.filter(seller=request.user).order_by('-created_at')
+    
     if request.method == 'POST':
         # دکمه ساخت مینی‌سایت
         if 'create_site' in request.POST:
@@ -420,7 +428,8 @@ def manage_mini_site(request):
         'profile': profile,
         'links': links,
         'form': form,
-        'products': profile.products.all(), # اضافه شدن محصولات به صفحه مدیریت مینی‌سایت
+        'products': profile.products.all(),
+        'received_orders': received_orders, # اضافه شد
     }
     return render(request, 'manage_mini_site.html', context)
 
@@ -461,3 +470,56 @@ def public_mini_site(request, username):
         'certificates': profile.certificates.all(),
     }
     return render(request, 'mini_site_public.html', context)
+
+
+# ==================== بخش خرید و سفارشات ====================
+
+@login_required
+def checkout(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+    
+    # جلوگیری از خرید محصول خود شخص
+    if product.profile.user == request.user:
+        messages.error(request, 'شما نمی‌توانید محصول خودتان را خریداری کنید.')
+        return redirect('public_mini_site', username=request.user.username)
+        
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.product = product
+            order.buyer = request.user
+            order.seller = product.profile.user
+            order.save()
+            messages.success(request, 'اطلاعات شما با موفقیت ثبت شد. لطفاً فیش پرداخت را آپلود کنید.')
+            return redirect('payment_page', order_id=order.id)
+    else:
+        form = CheckoutForm()
+        
+    return render(request, 'checkout.html', {'form': form, 'product': product})
+
+
+@login_required
+def payment_page(request, order_id):
+    order = get_object_or_404(Order, pk=order_id, buyer=request.user)
+    
+    if request.method == 'POST':
+        form = OrderReceiptForm(request.POST, request.FILES, instance=order)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'فیش پرداخت با موفقیت آپلود شد. پس از تایید فروشنده، سفارش شما پردازش می‌شود.')
+            return redirect('dashboard')
+    else:
+        form = OrderReceiptForm(instance=order)
+        
+    return render(request, 'payment_page.html', {'order': order, 'form': form})
+
+
+@login_required
+def update_order_status(request, order_id, status):
+    order = get_object_or_404(Order, pk=order_id, seller=request.user)
+    if status in ['approved', 'rejected']:
+        order.status = status
+        order.save()
+        messages.success(request, f'وضعیت سفارش {order.product.name} به {order.get_status_display()} تغییر یافت.')
+    return redirect('manage_mini_site')

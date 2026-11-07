@@ -2,7 +2,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import (
-    Profile, Skill, Experience, Education, Project, Product, Certificate, 
+    Profile, Skill, Experience, Education, Project, Product, Order, Certificate, 
     CustomLink, PaymentReceipt, JobPost
 )
 
@@ -24,9 +24,10 @@ class RegisterForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['full_name', 'job_title', 'email', 'phone', 'location', 'website', 'avatar', 'linkedin', 'github', 'twitter', 'bio', 'theme']
+        fields = ['full_name', 'job_title', 'email', 'phone', 'location', 'website', 'avatar', 'linkedin', 'github', 'twitter', 'bio', 'theme', 'card_number']
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 4}),
+            'card_number': forms.TextInput(attrs={'placeholder': 'مثلاً: 6037-9977-1234-5678'}),
         }
 
     def clean_avatar(self):
@@ -133,3 +134,36 @@ class CustomLinkForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'placeholder': 'مثلاً: کانال تلگرام من'}),
             'url': forms.URLInput(attrs={'placeholder': 'https://t.me/username'}),
         }
+
+
+class CheckoutForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['first_name', 'last_name', 'phone', 'location', 'address', 'postal_code']
+        widgets = {
+            'address': forms.Textarea(attrs={'rows': 3}),
+            'first_name': forms.TextInput(attrs={'placeholder': 'نام'}),
+            'last_name': forms.TextInput(attrs={'placeholder': 'نام خانوادگی'}),
+            'phone': forms.TextInput(attrs={'placeholder': '09123456789'}),
+            'location': forms.TextInput(attrs={'placeholder': 'مثلاً: تهران'}),
+            'postal_code': forms.TextInput(attrs={'placeholder': 'کد پستی ۱۰ رقمی'}),
+        }
+
+
+class OrderReceiptForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['receipt_image']
+        widgets = {
+            'receipt_image': forms.FileInput(attrs={'accept': 'image/*'}),
+        }
+
+    def clean_receipt_image(self):
+        image = self.cleaned_data.get('receipt_image')
+        if image and hasattr(image, 'size') and image.size > 0:
+            if image.size > 5 * 1024 * 1024:
+                raise forms.ValidationError('حجم تصویر فیش نباید بیشتر از ۵ مگابایت باشه')
+            name = image.name.lower()
+            if not (name.endswith('.jpg') or name.endswith('.jpeg') or name.endswith('.png') or name.endswith('.webp')):
+                raise forms.ValidationError('فقط فرمت‌های JPG، PNG و WebP پشتیبانی می‌شن')
+        return image
