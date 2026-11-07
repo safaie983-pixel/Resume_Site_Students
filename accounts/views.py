@@ -510,6 +510,18 @@ def order_status(request, tracking_code):
     return render(request, 'order_status.html', {'order': order})
 
 
+# این تابع جدید برای پیگیری سفارشات (با شماره تلفن یا کد رهگیری) اضافه شده است
+def track_order(request):
+    orders = None
+    query = ""
+    if request.method == 'POST':
+        query = request.POST.get('query', '').strip()
+        if query:
+            orders = Order.objects.filter(models.Q(phone__icontains=query) | models.Q(tracking_code__icontains=query)).order_by('-created_at')
+    
+    return render(request, 'track_order.html', {'orders': orders, 'query': query})
+
+
 @login_required
 def update_order_status(request, order_id, status):
     order = get_object_or_404(Order, pk=order_id, seller=request.user)

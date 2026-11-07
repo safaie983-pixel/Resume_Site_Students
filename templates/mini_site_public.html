@@ -240,8 +240,10 @@
     </div>
     {% endif %}
 
-    <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid rgba(128,128,128,0.2);">
-        <a href="{% url 'public_profile' profile_user.username %}" style="opacity: 0.8; font-size: 13px; text-decoration: none; color: inherit;">مشاهده رزومه کامل در سایت اصلی ←</a>
+    <!-- فوتر مینی‌سایت (لینک پیگیری اضافه شد) -->
+    <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid rgba(128,128,128,0.2); display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+        <a href="{% url 'track_order' %}" style="opacity: 0.8; font-size: 13px; text-decoration: none; color: inherit; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 8px;">🔍 پیگیری سفارشات</a>
+        <a href="{% url 'public_profile' profile_user.username %}" style="opacity: 0.8; font-size: 13px; text-decoration: none; color: inherit; padding: 5px 0;">مشاهده رزومه کامل در سایت اصلی ←</a>
     </div>
 </div>
 {% endblock %}
