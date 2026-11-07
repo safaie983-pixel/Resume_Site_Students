@@ -14,7 +14,7 @@ def populate_codes(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0012_order_tracking_code'),
+        ('accounts', '0012_alter_certificate_options_alter_customlink_options_and_more'),
     ]
 
     operations = [
