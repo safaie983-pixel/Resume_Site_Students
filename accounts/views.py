@@ -13,7 +13,7 @@ import json
 from .forms import (
     RegisterForm, ProfileForm, SkillForm, ExperienceForm, EducationForm, 
     ProjectForm, ProductForm, CertificateForm, PaymentReceiptForm, JobPostForm, CustomLinkForm,
-    CheckoutForm, OrderReceiptForm
+    CheckoutForm, OrderReceiptForm, DeliverOrderForm
 )
 from .models import (
     Profile, Skill, Experience, Education, Project, Product, Order, Certificate, 
@@ -91,8 +91,7 @@ def dashboard(request):
     subscription, created_sub = Subscription.objects.get_or_create(user=request.user)
     is_sub_active = subscription.check_active()
     
-    # سفارش‌هایی که کاربر به عنوان خریدار ثبت کرده است
-    my_orders = Order.objects.filter(buyer=request.user)
+    my_orders = Order.objects.filter(buyer=request.user).order_by('-created_at')
     
     context = {
         'profile': profile,
@@ -104,7 +103,7 @@ def dashboard(request):
         'certificates': profile.certificates.all(),
         'subscription': subscription,
         'is_sub_active': is_sub_active,
-        'my_orders': my_orders, # اضافه شد
+        'my_orders': my_orders,
         'stats': {
             'skills_count': profile.skills.count(),
             'experiences_count': profile.experiences.count(),
@@ -393,18 +392,15 @@ def manage_mini_site(request):
     profile = request.user.profile
     links = profile.custom_links.all()
     
-    # سفارش‌هایی که برای این فروشنده ثبت شده است
     received_orders = Order.objects.filter(seller=request.user).order_by('-created_at')
     
     if request.method == 'POST':
-        # دکمه ساخت مینی‌سایت
         if 'create_site' in request.POST:
             profile.has_mini_site = True
             profile.save()
             messages.success(request, 'مینی‌سایت شما با موفقیت ساخته شد! حالا می‌توانید آن را شخصی‌سازی کنید.')
             return redirect('manage_mini_site')
 
-        # بروزرسانی تم
         if 'update_theme' in request.POST:
             new_theme = request.POST.get('theme')
             if new_theme in ['dark', 'light', 'neon', 'ocean', 'sunset', 'forest']:
@@ -413,7 +409,6 @@ def manage_mini_site(request):
                 messages.success(request, 'تم مینی‌سایت شما با موفقیت تغییر کرد.')
             return redirect('manage_mini_site')
             
-        # افزودن لینک
         form = CustomLinkForm(request.POST)
         if form.is_valid():
             link = form.save(commit=False)
@@ -429,7 +424,7 @@ def manage_mini_site(request):
         'links': links,
         'form': form,
         'products': profile.products.all(),
-        'received_orders': received_orders, # اضافه شد
+        'received_orders': received_orders,
     }
     return render(request, 'manage_mini_site.html', context)
 
@@ -453,7 +448,6 @@ def public_mini_site(request, username):
     
     sub, _ = Subscription.objects.get_or_create(user=user_obj)
     
-    # بررسی اینکه کاربر اشتراک دارد و مینی‌سایت را ساخته است
     if not sub.check_active() or not profile.has_mini_site:
         return render(request, 'mini_site_inactive.html')
         
@@ -461,7 +455,6 @@ def public_mini_site(request, username):
         'profile_user': user_obj,
         'profile': profile,
         'links': profile.custom_links.all(),
-        # اطلاعات کامل رزومه برای نمایش در مینی سایت
         'skills': profile.skills.all(),
         'experiences': profile.experiences.all(),
         'educations': profile.educations.all(),
@@ -474,12 +467,10 @@ def public_mini_site(request, username):
 
 # ==================== بخش خرید و سفارشات ====================
 
-@login_required
 def checkout(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     
-    # جلوگیری از خرید محصول خود شخص
-    if product.profile.user == request.user:
+    if request.user.is_authenticated and product.profile.user == request.user:
         messages.error(request, 'شما نمی‌توانید محصول خودتان را خریداری کنید.')
         return redirect('public_mini_site', username=request.user.username)
         
@@ -488,7 +479,7 @@ def checkout(request, product_id):
         if form.is_valid():
             order = form.save(commit=False)
             order.product = product
-            order.buyer = request.user
+            order.buyer = request.user if request.user.is_authenticated else None
             order.seller = product.profile.user
             order.save()
             messages.success(request, 'اطلاعات شما با موفقیت ثبت شد. لطفاً فیش پرداخت را آپلود کنید.')
@@ -499,20 +490,24 @@ def checkout(request, product_id):
     return render(request, 'checkout.html', {'form': form, 'product': product})
 
 
-@login_required
 def payment_page(request, order_id):
-    order = get_object_or_404(Order, pk=order_id, buyer=request.user)
+    order = get_object_or_404(Order, pk=order_id)
     
     if request.method == 'POST':
         form = OrderReceiptForm(request.POST, request.FILES, instance=order)
         if form.is_valid():
             form.save()
-            messages.success(request, 'فیش پرداخت با موفقیت آپلود شد. پس از تایید فروشنده، سفارش شما پردازش می‌شود.')
-            return redirect('dashboard')
+            messages.success(request, 'فیش پرداخت با موفقیت آپلود شد. کد رهگیری خود را ذخیره کنید.')
+            return redirect('order_status', tracking_code=order.tracking_code)
     else:
         form = OrderReceiptForm(instance=order)
         
     return render(request, 'payment_page.html', {'order': order, 'form': form})
+
+
+def order_status(request, tracking_code):
+    order = get_object_or_404(Order, tracking_code=tracking_code)
+    return render(request, 'order_status.html', {'order': order})
 
 
 @login_required
@@ -521,5 +516,34 @@ def update_order_status(request, order_id, status):
     if status in ['approved', 'rejected']:
         order.status = status
         order.save()
-        messages.success(request, f'وضعیت سفارش {order.product.name} به {order.get_status_display()} تغییر یافت.')
+        messages.success(request, f'وضعیت سفارش {order.product.name} تغییر یافت.')
+    return redirect('manage_mini_site')
+
+
+@login_required
+def deliver_order(request, order_id):
+    order = get_object_or_404(Order, pk=order_id, seller=request.user)
+    if order.status != 'approved':
+        messages.error(request, 'فقط سفارشات تایید شده قابل تحویل هستند.')
+        return redirect('manage_mini_site')
+        
+    if request.method == 'POST':
+        form = DeliverOrderForm(request.POST, request.FILES, instance=order)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.status = 'delivered'
+            order.save()
+            messages.success(request, 'فایل محصول با موفقیت آپلود و وضعیت به تحویل داده شده تغییر یافت.')
+            return redirect('manage_mini_site')
+    else:
+        form = DeliverOrderForm(instance=order)
+        
+    return render(request, 'deliver_order.html', {'form': form, 'order': order})
+
+
+@login_required
+def delete_order(request, order_id):
+    order = get_object_or_404(Order, pk=order_id, seller=request.user)
+    order.delete()
+    messages.success(request, 'سفارش با موفقیت حذف شد.')
     return redirect('manage_mini_site')

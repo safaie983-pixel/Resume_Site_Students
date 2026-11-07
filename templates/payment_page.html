@@ -7,6 +7,9 @@
     <div style="text-align: center; margin-bottom: 30px;">
         <h1 style="font-size: 26px; color: #10b981; margin-bottom: 10px;">💳 پرداخت سفارش</h1>
         <p style="color: #cbd5e1; font-size: 14px;">سفارش شما با موفقیت ثبت شد. برای تکمیل، لطفاً مبلغ را واریز و فیش را آپلود کنید.</p>
+        <div style="background: rgba(14, 165, 233, 0.1); border: 1px dashed rgba(14, 165, 233, 0.5); padding: 10px; border-radius: 8px; display: inline-block; margin-top: 15px;">
+            <strong style="color: #38bdf8;">کد رهگیری سفارش شما: {{ order.tracking_code }}</strong>
+        </div>
     </div>
 
     <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 16px; padding: 25px; margin-bottom: 30px; text-align: center;">
@@ -34,6 +37,10 @@
             </div>
             <button type="submit" style="width: 100%; background: linear-gradient(135deg, #10b981, #059669); font-size: 16px;">ارسال فیش و نهایی‌سازی</button>
         </form>
+    </div>
+    
+    <div style="text-align: center; margin-top: 20px;">
+        <p style="color: #94a3b8; font-size: 13px;">پس از آپلود فیش، به صفحه وضعیت سفارش هدایت می‌شوید.</p>
     </div>
 </div>
 {% endblock %}

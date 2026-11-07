@@ -156,24 +156,35 @@
         {% endif %}
     </div>
 
-    <!-- بخش سفارشات دریافتی (جدید) -->
+    <!-- بخش سفارشات دریافتی -->
     <div style="background: rgba(236, 72, 153, 0.08); border: 1px solid rgba(236, 72, 153, 0.25); border-radius: 16px; padding: 25px;">
-        <h2 style="font-size: 20px; margin: 0 0 10px 0;">📦 سفارشات دریافتی</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+            <h2 style="font-size: 20px; margin: 0;">📦 سفارشات دریافتی</h2>
+            <span style="font-size: 12px; color: #94a3b8; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 6px;">تعداد کل: {{ received_orders|length }}</span>
+        </div>
         <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">سفارشاتی که برای محصولات شما ثبت شده است. پس از بررسی فیش، وضعیت را تغییر دهید.</p>
         
         {% if received_orders %}
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
                 {% for order in received_orders %}
-                <div style="background: rgba(15, 23, 42, 0.6); padding: 18px; border-radius: 12px; border: 1px solid rgba(236, 72, 153, 0.2);">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 18px; border-radius: 12px; border: 1px solid rgba(236, 72, 153, 0.2); position: relative;">
+                    
+                    <a href="{% url 'delete_order' order.id %}" style="position: absolute; top: 10px; left: 10px; color: #f87171; font-size: 18px; text-decoration: none; background: rgba(239,68,68,0.1); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%;" title="حذف این سفارش" onclick="return confirm('آیا از حذف این سفارش مطمئن هستید؟');">✕</a>
+
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding-left: 30px;">
                         <strong style="color: #f472b6; font-size: 15px;">{{ order.product.name }}</strong>
-                        <span style="font-size: 12px; padding: 2px 8px; border-radius: 6px;
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <span style="font-size: 12px; padding: 3px 10px; border-radius: 6px;
                             {% if order.status == 'pending' %}background: rgba(251, 191, 36, 0.2); color: #fbbf24;
                             {% elif order.status == 'approved' %}background: rgba(34, 197, 94, 0.2); color: #4ade80;
+                            {% elif order.status == 'delivered' %}background: rgba(14, 165, 233, 0.2); color: #38bdf8;
                             {% else %}background: rgba(239, 68, 68, 0.2); color: #f87171;{% endif %}">
                             {{ order.get_status_display }}
                         </span>
                     </div>
+
                     <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 5px;">خریدار: {{ order.first_name }} {{ order.last_name }} ({{ order.phone }})</div>
                     <div style="font-size: 13px; color: #94a3b8; margin-bottom: 5px;">آدرس: {{ order.location }}، {{ order.address }}، کد پستی: {{ order.postal_code }}</div>
                     <div style="color: #34d399; font-size: 14px; font-weight: bold; margin-bottom: 10px;">مبلغ: {{ order.product.price }} تومان</div>
@@ -192,6 +203,10 @@
                             <a href="{% url 'update_order_status' order.id 'approved' %}" style="flex: 1; text-align: center; background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); border-radius: 8px; padding: 8px; text-decoration: none; font-size: 13px;">✅ تایید سفارش</a>
                             <a href="{% url 'update_order_status' order.id 'rejected' %}" style="flex: 1; text-align: center; background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 8px; padding: 8px; text-decoration: none; font-size: 13px;">❌ رد سفارش</a>
                         </div>
+                    {% elif order.status == 'approved' %}
+                        <a href="{% url 'deliver_order' order.id %}" style="display: block; text-align: center; background: rgba(14, 165, 233, 0.2); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.4); border-radius: 8px; padding: 10px; text-decoration: none; font-size: 14px; font-weight: bold;">📤 آپلود فایل محصول</a>
+                    {% elif order.status == 'delivered' %}
+                        <div style="text-align: center; background: rgba(14, 165, 233, 0.1); color: #38bdf8; border-radius: 8px; padding: 10px; font-size: 13px;">✅ فایل برای خریدار ارسال شد</div>
                     {% endif %}
                 </div>
                 {% endfor %}

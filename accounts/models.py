@@ -2,54 +2,56 @@ from django.db import models
 from django.contrib.auth.models import User
 from auditlog.registry import auditlog
 from django.utils import timezone
+import random
+import string
 
 
 class Profile(models.Model):
     THEME_CHOICES = [
-        ('dark', 'تاریک (پیش‌فرض)'),
-        ('light', 'روشن'),
-        ('neon', 'نئون'),
-        ('ocean', 'اقیانوس (آبی)'),
-        ('sunset', 'غروب (نارنجی/بنفش)'),
-        ('forest', 'جنگل (سبز)'),
+        ('dark', 'Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’ÃšÂ© (Ã™Â¾Ã›Å’Ã˜Â´Ã¢â‚¬Å’Ã™ÂÃ˜Â±Ã˜Â¶)'),
+        ('light', 'Ã˜Â±Ã™Ë†Ã˜Â´Ã™â€ '),
+        ('neon', 'Ã™â€ Ã˜Â¦Ã™Ë†Ã™â€ '),
+        ('ocean', 'Ã˜Â§Ã™â€šÃ›Å’Ã˜Â§Ã™â€ Ã™Ë†Ã˜Â³ (Ã˜Â¢Ã˜Â¨Ã›Å’)'),
+        ('sunset', 'Ã˜ÂºÃ˜Â±Ã™Ë†Ã˜Â¨ (Ã™â€ Ã˜Â§Ã˜Â±Ã™â€ Ã˜Â¬Ã›Å’/Ã˜Â¨Ã™â€ Ã™ÂÃ˜Â´)'),
+        ('forest', 'Ã˜Â¬Ã™â€ ÃšÂ¯Ã™â€ž (Ã˜Â³Ã˜Â¨Ã˜Â²)'),
     ]
     
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    full_name = models.CharField(max_length=100, blank=True, verbose_name='نام و نام خانوادگی')
-    bio = models.TextField(blank=True, verbose_name='درباره من')
-    job_title = models.CharField(max_length=100, blank=True, verbose_name='عنوان شغلی')
-    email = models.EmailField(blank=True, verbose_name='ایمیل')
-    phone = models.CharField(max_length=20, blank=True, verbose_name='شماره تماس')
-    location = models.CharField(max_length=100, blank=True, verbose_name='محل سکونت')
-    website = models.URLField(blank=True, verbose_name='وب‌سایت')
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, verbose_name='عکس پروفایل')
-    linkedin = models.URLField(blank=True, verbose_name='لینکدین')
-    github = models.URLField(blank=True, verbose_name='گیت‌هاب')
-    twitter = models.URLField(blank=True, verbose_name='توییتر')
+    full_name = models.CharField(max_length=100, blank=True, verbose_name='Ã™â€ Ã˜Â§Ã™â€¦ Ã™Ë† Ã™â€ Ã˜Â§Ã™â€¦ Ã˜Â®Ã˜Â§Ã™â€ Ã™Ë†Ã˜Â§Ã˜Â¯ÃšÂ¯Ã›Å’')
+    bio = models.TextField(blank=True, verbose_name='Ã˜Â¯Ã˜Â±Ã˜Â¨Ã˜Â§Ã˜Â±Ã™â€¡ Ã™â€¦Ã™â€ ')
+    job_title = models.CharField(max_length=100, blank=True, verbose_name='Ã˜Â¹Ã™â€ Ã™Ë†Ã˜Â§Ã™â€  Ã˜Â´Ã˜ÂºÃ™â€žÃ›Å’')
+    email = models.EmailField(blank=True, verbose_name='Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž')
+    phone = models.CharField(max_length=20, blank=True, verbose_name='Ã˜Â´Ã™â€¦Ã˜Â§Ã˜Â±Ã™â€¡ Ã˜ÂªÃ™â€¦Ã˜Â§Ã˜Â³')
+    location = models.CharField(max_length=100, blank=True, verbose_name='Ã™â€¦Ã˜Â­Ã™â€ž Ã˜Â³ÃšÂ©Ã™Ë†Ã™â€ Ã˜Âª')
+    website = models.URLField(blank=True, verbose_name='Ã™Ë†Ã˜Â¨Ã¢â‚¬Å’Ã˜Â³Ã˜Â§Ã›Å’Ã˜Âª')
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, verbose_name='Ã˜Â¹ÃšÂ©Ã˜Â³ Ã™Â¾Ã˜Â±Ã™Ë†Ã™ÂÃ˜Â§Ã›Å’Ã™â€ž')
+    linkedin = models.URLField(blank=True, verbose_name='Ã™â€žÃ›Å’Ã™â€ ÃšÂ©Ã˜Â¯Ã›Å’Ã™â€ ')
+    github = models.URLField(blank=True, verbose_name='ÃšÂ¯Ã›Å’Ã˜ÂªÃ¢â‚¬Å’Ã™â€¡Ã˜Â§Ã˜Â¨')
+    twitter = models.URLField(blank=True, verbose_name='Ã˜ÂªÃ™Ë†Ã›Å’Ã›Å’Ã˜ÂªÃ˜Â±')
     
-    theme = models.CharField(max_length=20, choices=THEME_CHOICES, default='dark', verbose_name='قالب سایت شخصی')
-    has_mini_site = models.BooleanField(default=False, verbose_name='مینی‌سایت ساخته شده است')
-    card_number = models.CharField(max_length=30, blank=True, verbose_name='شماره کارت برای دریافت وجه')
+    theme = models.CharField(max_length=20, choices=THEME_CHOICES, default='dark', verbose_name='Ã™â€šÃ˜Â§Ã™â€žÃ˜Â¨ Ã˜Â³Ã˜Â§Ã›Å’Ã˜Âª Ã˜Â´Ã˜Â®Ã˜ÂµÃ›Å’')
+    has_mini_site = models.BooleanField(default=False, verbose_name='Ã™â€¦Ã›Å’Ã™â€ Ã›Å’Ã¢â‚¬Å’Ã˜Â³Ã˜Â§Ã›Å’Ã˜Âª Ã˜Â³Ã˜Â§Ã˜Â®Ã˜ÂªÃ™â€¡ Ã˜Â´Ã˜Â¯Ã™â€¡ Ã˜Â§Ã˜Â³Ã˜Âª')
+    card_number = models.CharField(max_length=30, blank=True, verbose_name='Ã˜Â´Ã™â€¦Ã˜Â§Ã˜Â±Ã™â€¡ ÃšÂ©Ã˜Â§Ã˜Â±Ã˜Âª Ã˜Â¨Ã˜Â±Ã˜Â§Ã›Å’ Ã˜Â¯Ã˜Â±Ã›Å’Ã˜Â§Ã™ÂÃ˜Âª Ã™Ë†Ã˜Â¬Ã™â€¡')
     
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
-    updated_at = models.DateTimeField(auto_now=True, verbose_name='آخرین ویرایش')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â® Ã˜Â§Ã›Å’Ã˜Â¬Ã˜Â§Ã˜Â¯')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Ã˜Â¢Ã˜Â®Ã˜Â±Ã›Å’Ã™â€  Ã™Ë†Ã›Å’Ã˜Â±Ã˜Â§Ã›Å’Ã˜Â´')
 
     class Meta:
-        verbose_name = 'پروفایل'
-        verbose_name_plural = 'پروفایل‌ها'
+        verbose_name = 'Ã™Â¾Ã˜Â±Ã™Ë†Ã™ÂÃ˜Â§Ã›Å’Ã™â€ž'
+        verbose_name_plural = 'Ã™Â¾Ã˜Â±Ã™Ë†Ã™ÂÃ˜Â§Ã›Å’Ã™â€žÃ¢â‚¬Å’Ã™â€¡Ã˜Â§'
 
     def __str__(self):
-        return f'پروفایل {self.user.username}'
+        return f'Ã™Â¾Ã˜Â±Ã™Ë†Ã™ÂÃ˜Â§Ã›Å’Ã™â€ž {self.user.username}'
 
 
 class Skill(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='skills')
-    name = models.CharField(max_length=100, verbose_name='نام مهارت')
-    level = models.PositiveIntegerField(default=50, verbose_name='سطح (0-100)')
+    name = models.CharField(max_length=100, verbose_name='Ã™â€ Ã˜Â§Ã™â€¦ Ã™â€¦Ã™â€¡Ã˜Â§Ã˜Â±Ã˜Âª')
+    level = models.PositiveIntegerField(default=50, verbose_name='Ã˜Â³Ã˜Â·Ã˜Â­ (0-100)')
 
     class Meta:
-        verbose_name = 'مهارت'
-        verbose_name_plural = 'مهارت‌ها'
+        verbose_name = 'Ã™â€¦Ã™â€¡Ã˜Â§Ã˜Â±Ã˜Âª'
+        verbose_name_plural = 'Ã™â€¦Ã™â€¡Ã˜Â§Ã˜Â±Ã˜ÂªÃ¢â‚¬Å’Ã™â€¡Ã˜Â§'
 
     def __str__(self):
         return f'{self.name} - {self.profile.user.username}'
@@ -57,15 +59,15 @@ class Skill(models.Model):
 
 class Experience(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='experiences')
-    title = models.CharField(max_length=100, verbose_name='عنوان شغلی')
-    company = models.CharField(max_length=100, verbose_name='نام شرکت/سازمان')
-    start_date = models.DateField(verbose_name='تاریخ شروع')
-    end_date = models.DateField(null=True, blank=True, verbose_name='تاریخ پایان')
-    description = models.TextField(blank=True, verbose_name='توضیحات')
+    title = models.CharField(max_length=100, verbose_name='Ã˜Â¹Ã™â€ Ã™Ë†Ã˜Â§Ã™â€  Ã˜Â´Ã˜ÂºÃ™â€žÃ›Å’')
+    company = models.CharField(max_length=100, verbose_name='Ã™â€ Ã˜Â§Ã™â€¦ Ã˜Â´Ã˜Â±ÃšÂ©Ã˜Âª/Ã˜Â³Ã˜Â§Ã˜Â²Ã™â€¦Ã˜Â§Ã™â€ ')
+    start_date = models.DateField(verbose_name='Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â® Ã˜Â´Ã˜Â±Ã™Ë†Ã˜Â¹')
+    end_date = models.DateField(null=True, blank=True, verbose_name='Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â® Ã™Â¾Ã˜Â§Ã›Å’Ã˜Â§Ã™â€ ')
+    description = models.TextField(blank=True, verbose_name='Ã˜ÂªÃ™Ë†Ã˜Â¶Ã›Å’Ã˜Â­Ã˜Â§Ã˜Âª')
 
     class Meta:
-        verbose_name = 'تجربه کاری'
-        verbose_name_plural = 'تجربه‌های کاری'
+        verbose_name = 'Ã˜ÂªÃ˜Â¬Ã˜Â±Ã˜Â¨Ã™â€¡ ÃšÂ©Ã˜Â§Ã˜Â±Ã›Å’'
+        verbose_name_plural = 'Ã˜ÂªÃ˜Â¬Ã˜Â±Ã˜Â¨Ã™â€¡Ã¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ ÃšÂ©Ã˜Â§Ã˜Â±Ã›Å’'
 
     def __str__(self):
         return f'{self.title} - {self.company}'
@@ -73,15 +75,15 @@ class Experience(models.Model):
 
 class Education(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='educations')
-    degree = models.CharField(max_length=100, verbose_name='مدرک')
-    field = models.CharField(max_length=100, verbose_name='رشته تحصیلی')
-    university = models.CharField(max_length=150, verbose_name='دانشگاه/موسسه')
-    start_year = models.CharField(max_length=10, verbose_name='سال شروع')
-    end_year = models.CharField(max_length=10, blank=True, verbose_name='سال پایان')
+    degree = models.CharField(max_length=100, verbose_name='Ã™â€¦Ã˜Â¯Ã˜Â±ÃšÂ©')
+    field = models.CharField(max_length=100, verbose_name='Ã˜Â±Ã˜Â´Ã˜ÂªÃ™â€¡ Ã˜ÂªÃ˜Â­Ã˜ÂµÃ›Å’Ã™â€žÃ›Å’')
+    university = models.CharField(max_length=150, verbose_name='Ã˜Â¯Ã˜Â§Ã™â€ Ã˜Â´ÃšÂ¯Ã˜Â§Ã™â€¡/Ã™â€¦Ã™Ë†Ã˜Â³Ã˜Â³Ã™â€¡')
+    start_year = models.CharField(max_length=10, verbose_name='Ã˜Â³Ã˜Â§Ã™â€ž Ã˜Â´Ã˜Â±Ã™Ë†Ã˜Â¹')
+    end_year = models.CharField(max_length=10, blank=True, verbose_name='Ã˜Â³Ã˜Â§Ã™â€ž Ã™Â¾Ã˜Â§Ã›Å’Ã˜Â§Ã™â€ ')
 
     class Meta:
-        verbose_name = 'تحصیلات'
-        verbose_name_plural = 'تحصیلات'
+        verbose_name = 'Ã˜ÂªÃ˜Â­Ã˜ÂµÃ›Å’Ã™â€žÃ˜Â§Ã˜Âª'
+        verbose_name_plural = 'Ã˜ÂªÃ˜Â­Ã˜ÂµÃ›Å’Ã™â€žÃ˜Â§Ã˜Âª'
 
     def __str__(self):
         return f'{self.degree} - {self.field}'
@@ -89,16 +91,16 @@ class Education(models.Model):
 
 class Project(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='projects')
-    title = models.CharField(max_length=150, verbose_name='عنوان پروژه')
-    description = models.TextField(blank=True, verbose_name='توضیحات')
-    link = models.URLField(blank=True, verbose_name='لینک پروژه')
-    image = models.ImageField(upload_to='projects/', blank=True, null=True, verbose_name='عکس پروژه')
-    technologies = models.CharField(max_length=200, blank=True, verbose_name='تکنولوژی‌ها')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
+    title = models.CharField(max_length=150, verbose_name='Ã˜Â¹Ã™â€ Ã™Ë†Ã˜Â§Ã™â€  Ã™Â¾Ã˜Â±Ã™Ë†ÃšËœÃ™â€¡')
+    description = models.TextField(blank=True, verbose_name='Ã˜ÂªÃ™Ë†Ã˜Â¶Ã›Å’Ã˜Â­Ã˜Â§Ã˜Âª')
+    link = models.URLField(blank=True, verbose_name='Ã™â€žÃ›Å’Ã™â€ ÃšÂ© Ã™Â¾Ã˜Â±Ã™Ë†ÃšËœÃ™â€¡')
+    image = models.ImageField(upload_to='projects/', blank=True, null=True, verbose_name='Ã˜Â¹ÃšÂ©Ã˜Â³ Ã™Â¾Ã˜Â±Ã™Ë†ÃšËœÃ™â€¡')
+    technologies = models.CharField(max_length=200, blank=True, verbose_name='Ã˜ÂªÃšÂ©Ã™â€ Ã™Ë†Ã™â€žÃ™Ë†ÃšËœÃ›Å’Ã¢â‚¬Å’Ã™â€¡Ã˜Â§')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â® Ã˜Â§Ã›Å’Ã˜Â¬Ã˜Â§Ã˜Â¯')
 
     class Meta:
-        verbose_name = 'پروژه'
-        verbose_name_plural = 'پروژه‌ها'
+        verbose_name = 'Ã™Â¾Ã˜Â±Ã™Ë†ÃšËœÃ™â€¡'
+        verbose_name_plural = 'Ã™Â¾Ã˜Â±Ã™Ë†ÃšËœÃ™â€¡Ã¢â‚¬Å’Ã™â€¡Ã˜Â§'
         ordering = ['-created_at']
 
     def __str__(self):
@@ -107,62 +109,69 @@ class Project(models.Model):
 
 class Product(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='products')
-    name = models.CharField(max_length=150, verbose_name='نام محصول')
-    description = models.TextField(blank=True, verbose_name='توضیحات')
-    price = models.PositiveIntegerField(default=0, verbose_name='قیمت (تومان)')
-    image = models.ImageField(upload_to='products/', blank=True, null=True, verbose_name='عکس محصول')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
+    name = models.CharField(max_length=150, verbose_name='Ã™â€ Ã˜Â§Ã™â€¦ Ã™â€¦Ã˜Â­Ã˜ÂµÃ™Ë†Ã™â€ž')
+    description = models.TextField(blank=True, verbose_name='Ã˜ÂªÃ™Ë†Ã˜Â¶Ã›Å’Ã˜Â­Ã˜Â§Ã˜Âª')
+    price = models.PositiveIntegerField(default=0, verbose_name='Ã™â€šÃ›Å’Ã™â€¦Ã˜Âª (Ã˜ÂªÃ™Ë†Ã™â€¦Ã˜Â§Ã™â€ )')
+    image = models.ImageField(upload_to='products/', blank=True, null=True, verbose_name='Ã˜Â¹ÃšÂ©Ã˜Â³ Ã™â€¦Ã˜Â­Ã˜ÂµÃ™Ë†Ã™â€ž')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â® Ã˜Â§Ã›Å’Ã˜Â¬Ã˜Â§Ã˜Â¯')
 
     class Meta:
-        verbose_name = 'محصول'
-        verbose_name_plural = 'محصولات'
+        verbose_name = 'Ã™â€¦Ã˜Â­Ã˜ÂµÃ™Ë†Ã™â€ž'
+        verbose_name_plural = 'Ã™â€¦Ã˜Â­Ã˜ÂµÃ™Ë†Ã™â€žÃ˜Â§Ã˜Âª'
         ordering = ['-created_at']
 
     def __str__(self):
         return f'{self.name} - {self.profile.user.username}'
 
 
+def generate_tracking_code():
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+
 class Order(models.Model):
     STATUS_CHOICES = [
-        ('pending', 'در انتظار بررسی'),
-        ('approved', 'تأیید شده'),
-        ('rejected', 'رد شده'),
+        ('pending', 'Ã˜Â¯Ã˜Â± Ã˜Â§Ã™â€ Ã˜ÂªÃ˜Â¸Ã˜Â§Ã˜Â± Ã˜Â¨Ã˜Â±Ã˜Â±Ã˜Â³Ã›Å’'),
+        ('approved', 'Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ Ã˜Â´Ã˜Â¯Ã™â€¡'),
+        ('delivered', 'Ã˜ÂªÃ˜Â­Ã™Ë†Ã›Å’Ã™â€ž Ã˜Â¯Ã˜Â§Ã˜Â¯Ã™â€¡ Ã˜Â´Ã˜Â¯Ã™â€¡'),
+        ('rejected', 'Ã˜Â±Ã˜Â¯ Ã˜Â´Ã˜Â¯Ã™â€¡'),
     ]
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='orders', verbose_name='محصول')
-    buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='my_orders', verbose_name='خریدار')
-    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_orders', verbose_name='فروشنده')
+    tracking_code = models.CharField(max_length=10, unique=True, default=generate_tracking_code, editable=False, verbose_name='ÃšÂ©Ã˜Â¯ Ã˜Â±Ã™â€¡ÃšÂ¯Ã›Å’Ã˜Â±Ã›Å’')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='orders', verbose_name='Ã™â€¦Ã˜Â­Ã˜ÂµÃ™Ë†Ã™â€ž')
+    buyer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='my_orders', verbose_name='Ã˜Â®Ã˜Â±Ã›Å’Ã˜Â¯Ã˜Â§Ã˜Â± (Ã˜Â§ÃšÂ©Ã˜Â§Ã™â€ Ã˜Âª)')
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_orders', verbose_name='Ã™ÂÃ˜Â±Ã™Ë†Ã˜Â´Ã™â€ Ã˜Â¯Ã™â€¡')
     
-    first_name = models.CharField(max_length=50, verbose_name='نام')
-    last_name = models.CharField(max_length=50, verbose_name='نام خانوادگی')
-    phone = models.CharField(max_length=20, verbose_name='شماره تماس')
-    address = models.TextField(verbose_name='آدرس دقیق')
-    postal_code = models.CharField(max_length=10, verbose_name='کد پستی')
-    location = models.CharField(max_length=100, verbose_name='استان/شهر')
+    first_name = models.CharField(max_length=50, verbose_name='Ã™â€ Ã˜Â§Ã™â€¦')
+    last_name = models.CharField(max_length=50, verbose_name='Ã™â€ Ã˜Â§Ã™â€¦ Ã˜Â®Ã˜Â§Ã™â€ Ã™Ë†Ã˜Â§Ã˜Â¯ÃšÂ¯Ã›Å’')
+    phone = models.CharField(max_length=20, verbose_name='Ã˜Â´Ã™â€¦Ã˜Â§Ã˜Â±Ã™â€¡ Ã˜ÂªÃ™â€¦Ã˜Â§Ã˜Â³')
+    address = models.TextField(verbose_name='Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã˜Â¯Ã™â€šÃ›Å’Ã™â€š')
+    postal_code = models.CharField(max_length=10, verbose_name='ÃšÂ©Ã˜Â¯ Ã™Â¾Ã˜Â³Ã˜ÂªÃ›Å’')
+    location = models.CharField(max_length=100, verbose_name='Ã˜Â§Ã˜Â³Ã˜ÂªÃ˜Â§Ã™â€ /Ã˜Â´Ã™â€¡Ã˜Â±')
     
-    receipt_image = models.ImageField(upload_to='order_receipts/', blank=True, null=True, verbose_name='تصویر فیش پرداخت')
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending', verbose_name='وضعیت سفارش')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ثبت')
+    receipt_image = models.ImageField(upload_to='order_receipts/', blank=True, null=True, verbose_name='Ã˜ÂªÃ˜ÂµÃ™Ë†Ã›Å’Ã˜Â± Ã™ÂÃ›Å’Ã˜Â´ Ã™Â¾Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â®Ã˜Âª')
+    digital_file = models.FileField(upload_to='deliverables/', blank=True, null=True, verbose_name='Ã™ÂÃ˜Â§Ã›Å’Ã™â€ž Ã™â€¦Ã˜Â­Ã˜ÂµÃ™Ë†Ã™â€ž (Ã˜ÂªÃ˜Â­Ã™Ë†Ã›Å’Ã™â€ž Ã˜Â¨Ã™â€¡ Ã˜Â®Ã˜Â±Ã›Å’Ã˜Â¯Ã˜Â§Ã˜Â±)')
+    
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending', verbose_name='Ã™Ë†Ã˜Â¶Ã˜Â¹Ã›Å’Ã˜Âª Ã˜Â³Ã™ÂÃ˜Â§Ã˜Â±Ã˜Â´')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â® Ã˜Â«Ã˜Â¨Ã˜Âª')
 
     class Meta:
-        verbose_name = 'سفارش'
-        verbose_name_plural = 'سفارش‌ها'
+        verbose_name = 'Ã˜Â³Ã™ÂÃ˜Â§Ã˜Â±Ã˜Â´'
+        verbose_name_plural = 'Ã˜Â³Ã™ÂÃ˜Â§Ã˜Â±Ã˜Â´Ã¢â‚¬Å’Ã™â€¡Ã˜Â§'
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'سفارش {self.product.name} توسط {self.buyer.username}'
+        return f'Ã˜Â³Ã™ÂÃ˜Â§Ã˜Â±Ã˜Â´ {self.tracking_code} - {self.product.name}'
 
 
 class Certificate(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='certificates')
-    title = models.CharField(max_length=150, verbose_name='عنوان گواهی‌نامه')
-    issuer = models.CharField(max_length=150, verbose_name='صادرکننده')
-    issue_date = models.CharField(max_length=20, blank=True, verbose_name='تاریخ صدور')
-    link = models.URLField(blank=True, verbose_name='لینک گواهی‌نامه')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
+    title = models.CharField(max_length=150, verbose_name='Ã˜Â¹Ã™â€ Ã™Ë†Ã˜Â§Ã™â€  ÃšÂ¯Ã™Ë†Ã˜Â§Ã™â€¡Ã›Å’Ã¢â‚¬Å’Ã™â€ Ã˜Â§Ã™â€¦Ã™â€¡')
+    issuer = models.CharField(max_length=150, verbose_name='Ã˜ÂµÃ˜Â§Ã˜Â¯Ã˜Â±ÃšÂ©Ã™â€ Ã™â€ Ã˜Â¯Ã™â€¡')
+    issue_date = models.CharField(max_length=20, blank=True, verbose_name='Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â® Ã˜ÂµÃ˜Â¯Ã™Ë†Ã˜Â±')
+    link = models.URLField(blank=True, verbose_name='Ã™â€žÃ›Å’Ã™â€ ÃšÂ© ÃšÂ¯Ã™Ë†Ã˜Â§Ã™â€¡Ã›Å’Ã¢â‚¬Å’Ã™â€ Ã˜Â§Ã™â€¦Ã™â€¡')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â® Ã˜Â§Ã›Å’Ã˜Â¬Ã˜Â§Ã˜Â¯')
 
     class Meta:
-        verbose_name = 'گواهی‌نامه'
-        verbose_name_plural = 'گواهی‌نامه‌ها'
+        verbose_name = 'ÃšÂ¯Ã™Ë†Ã˜Â§Ã™â€¡Ã›Å’Ã¢â‚¬Å’Ã™â€ Ã˜Â§Ã™â€¦Ã™â€¡'
+        verbose_name_plural = 'ÃšÂ¯Ã™Ë†Ã˜Â§Ã™â€¡Ã›Å’Ã¢â‚¬Å’Ã™â€ Ã˜Â§Ã™â€¦Ã™â€¡Ã¢â‚¬Å’Ã™â€¡Ã˜Â§'
         ordering = ['-created_at']
 
     def __str__(self):
@@ -171,12 +180,12 @@ class Certificate(models.Model):
 
 class CustomLink(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='custom_links')
-    title = models.CharField(max_length=100, verbose_name='عنوان لینک')
-    url = models.URLField(verbose_name='آدرس لینک')
+    title = models.CharField(max_length=100, verbose_name='Ã˜Â¹Ã™â€ Ã™Ë†Ã˜Â§Ã™â€  Ã™â€žÃ›Å’Ã™â€ ÃšÂ©')
+    url = models.URLField(verbose_name='Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã™â€žÃ›Å’Ã™â€ ÃšÂ©')
 
     class Meta:
-        verbose_name = 'لینک اختصاصی'
-        verbose_name_plural = 'لینک‌های اختصاصی'
+        verbose_name = 'Ã™â€žÃ›Å’Ã™â€ ÃšÂ© Ã˜Â§Ã˜Â®Ã˜ÂªÃ˜ÂµÃ˜Â§Ã˜ÂµÃ›Å’'
+        verbose_name_plural = 'Ã™â€žÃ›Å’Ã™â€ ÃšÂ©Ã¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ Ã˜Â§Ã˜Â®Ã˜ÂªÃ˜ÂµÃ˜Â§Ã˜ÂµÃ›Å’'
 
     def __str__(self):
         return f'{self.title} - {self.profile.user.username}'
@@ -184,8 +193,8 @@ class CustomLink(models.Model):
 
 class Subscription(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='subscription')
-    is_active = models.BooleanField(default=False, verbose_name='وضعیت فعال بودن')
-    expiry_date = models.DateTimeField(null=True, blank=True, verbose_name='تاریخ انقضا')
+    is_active = models.BooleanField(default=False, verbose_name='Ã™Ë†Ã˜Â¶Ã˜Â¹Ã›Å’Ã˜Âª Ã™ÂÃ˜Â¹Ã˜Â§Ã™â€ž Ã˜Â¨Ã™Ë†Ã˜Â¯Ã™â€ ')
+    expiry_date = models.DateTimeField(null=True, blank=True, verbose_name='Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â® Ã˜Â§Ã™â€ Ã™â€šÃ˜Â¶Ã˜Â§')
     
     def check_active(self):
         if self.is_active and self.expiry_date:
@@ -195,59 +204,59 @@ class Subscription(models.Model):
         return self.is_active
 
     def __str__(self):
-        return f'اشتراک {self.user.username} - {"فعال" if self.is_active else "غیرفعال"}'
+        return f'Ã˜Â§Ã˜Â´Ã˜ÂªÃ˜Â±Ã˜Â§ÃšÂ© {self.user.username} - {"Ã™ÂÃ˜Â¹Ã˜Â§Ã™â€ž" if self.is_active else "Ã˜ÂºÃ›Å’Ã˜Â±Ã™ÂÃ˜Â¹Ã˜Â§Ã™â€ž"}'
 
     class Meta:
-        verbose_name = 'اشتراک'
-        verbose_name_plural = 'اشتراک‌ها'
+        verbose_name = 'Ã˜Â§Ã˜Â´Ã˜ÂªÃ˜Â±Ã˜Â§ÃšÂ©'
+        verbose_name_plural = 'Ã˜Â§Ã˜Â´Ã˜ÂªÃ˜Â±Ã˜Â§ÃšÂ©Ã¢â‚¬Å’Ã™â€¡Ã˜Â§'
 
 
 class PaymentReceipt(models.Model):
     STATUS_CHOICES = [
-        ('pending', 'در انتظار بررسی'),
-        ('approved', 'تأیید شده'),
-        ('rejected', 'رد شده'),
+        ('pending', 'Ã˜Â¯Ã˜Â± Ã˜Â§Ã™â€ Ã˜ÂªÃ˜Â¸Ã˜Â§Ã˜Â± Ã˜Â¨Ã˜Â±Ã˜Â±Ã˜Â³Ã›Å’'),
+        ('approved', 'Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ Ã˜Â´Ã˜Â¯Ã™â€¡'),
+        ('rejected', 'Ã˜Â±Ã˜Â¯ Ã˜Â´Ã˜Â¯Ã™â€¡'),
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receipts')
-    image = models.ImageField(upload_to='receipts/', verbose_name='تصویر فیش')
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending', verbose_name='وضعیت')
-    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ آپلود')
+    image = models.ImageField(upload_to='receipts/', verbose_name='Ã˜ÂªÃ˜ÂµÃ™Ë†Ã›Å’Ã˜Â± Ã™ÂÃ›Å’Ã˜Â´')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending', verbose_name='Ã™Ë†Ã˜Â¶Ã˜Â¹Ã›Å’Ã˜Âª')
+    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â® Ã˜Â¢Ã™Â¾Ã™â€žÃ™Ë†Ã˜Â¯')
 
     def __str__(self):
-        return f'فیش {self.user.username} - {self.get_status_display()}'
+        return f'Ã™ÂÃ›Å’Ã˜Â´ {self.user.username} - {self.get_status_display()}'
 
     class Meta:
-        verbose_name = 'فیش واریزی (اشتراک)'
-        verbose_name_plural = 'فیش‌های واریزی (اشتراک)'
+        verbose_name = 'Ã™ÂÃ›Å’Ã˜Â´ Ã™Ë†Ã˜Â§Ã˜Â±Ã›Å’Ã˜Â²Ã›Å’ (Ã˜Â§Ã˜Â´Ã˜ÂªÃ˜Â±Ã˜Â§ÃšÂ©)'
+        verbose_name_plural = 'Ã™ÂÃ›Å’Ã˜Â´Ã¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ Ã™Ë†Ã˜Â§Ã˜Â±Ã›Å’Ã˜Â²Ã›Å’ (Ã˜Â§Ã˜Â´Ã˜ÂªÃ˜Â±Ã˜Â§ÃšÂ©)'
 
 
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
-    content = models.TextField(verbose_name='متن پیام')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ارسال')
-    is_read = models.BooleanField(default=False, verbose_name='خوانده شده')
+    content = models.TextField(verbose_name='Ã™â€¦Ã˜ÂªÃ™â€  Ã™Â¾Ã›Å’Ã˜Â§Ã™â€¦')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â® Ã˜Â§Ã˜Â±Ã˜Â³Ã˜Â§Ã™â€ž')
+    is_read = models.BooleanField(default=False, verbose_name='Ã˜Â®Ã™Ë†Ã˜Â§Ã™â€ Ã˜Â¯Ã™â€¡ Ã˜Â´Ã˜Â¯Ã™â€¡')
 
     class Meta:
-        verbose_name = 'پیام'
-        verbose_name_plural = 'پیام‌ها'
+        verbose_name = 'Ã™Â¾Ã›Å’Ã˜Â§Ã™â€¦'
+        verbose_name_plural = 'Ã™Â¾Ã›Å’Ã˜Â§Ã™â€¦Ã¢â‚¬Å’Ã™â€¡Ã˜Â§'
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'از {self.sender.username} به {self.receiver.username}'
+        return f'Ã˜Â§Ã˜Â² {self.sender.username} Ã˜Â¨Ã™â€¡ {self.receiver.username}'
 
 
 class JobPost(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='job_posts')
-    title = models.CharField(max_length=150, verbose_name='عنوان کار')
-    description = models.TextField(verbose_name='توضیحات')
-    budget = models.CharField(max_length=50, verbose_name='بودجه (مثلاً توافقی)')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ثبت')
-    is_active = models.BooleanField(default=True, verbose_name='فعال')
+    title = models.CharField(max_length=150, verbose_name='Ã˜Â¹Ã™â€ Ã™Ë†Ã˜Â§Ã™â€  ÃšÂ©Ã˜Â§Ã˜Â±')
+    description = models.TextField(verbose_name='Ã˜ÂªÃ™Ë†Ã˜Â¶Ã›Å’Ã˜Â­Ã˜Â§Ã˜Âª')
+    budget = models.CharField(max_length=50, verbose_name='Ã˜Â¨Ã™Ë†Ã˜Â¯Ã˜Â¬Ã™â€¡ (Ã™â€¦Ã˜Â«Ã™â€žÃ˜Â§Ã™â€¹ Ã˜ÂªÃ™Ë†Ã˜Â§Ã™ÂÃ™â€šÃ›Å’)')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â® Ã˜Â«Ã˜Â¨Ã˜Âª')
+    is_active = models.BooleanField(default=True, verbose_name='Ã™ÂÃ˜Â¹Ã˜Â§Ã™â€ž')
 
     class Meta:
-        verbose_name = 'آگهی کار'
-        verbose_name_plural = 'آگهی‌های کار'
+        verbose_name = 'Ã˜Â¢ÃšÂ¯Ã™â€¡Ã›Å’ ÃšÂ©Ã˜Â§Ã˜Â±'
+        verbose_name_plural = 'Ã˜Â¢ÃšÂ¯Ã™â€¡Ã›Å’Ã¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ ÃšÂ©Ã˜Â§Ã˜Â±'
         ordering = ['-created_at']
 
     def __str__(self):
@@ -255,14 +264,14 @@ class JobPost(models.Model):
 
 
 class SiteSetting(models.Model):
-    subscription_price = models.PositiveIntegerField(default=150000, verbose_name='قیمت اشتراک ماهانه (تومان)')
+    subscription_price = models.PositiveIntegerField(default=150000, verbose_name='Ã™â€šÃ›Å’Ã™â€¦Ã˜Âª Ã˜Â§Ã˜Â´Ã˜ÂªÃ˜Â±Ã˜Â§ÃšÂ© Ã™â€¦Ã˜Â§Ã™â€¡Ã˜Â§Ã™â€ Ã™â€¡ (Ã˜ÂªÃ™Ë†Ã™â€¦Ã˜Â§Ã™â€ )')
 
     class Meta:
-        verbose_name = 'تنظیمات سایت'
-        verbose_name_plural = 'تنظیمات سایت'
+        verbose_name = 'Ã˜ÂªÃ™â€ Ã˜Â¸Ã›Å’Ã™â€¦Ã˜Â§Ã˜Âª Ã˜Â³Ã˜Â§Ã›Å’Ã˜Âª'
+        verbose_name_plural = 'Ã˜ÂªÃ™â€ Ã˜Â¸Ã›Å’Ã™â€¦Ã˜Â§Ã˜Âª Ã˜Â³Ã˜Â§Ã›Å’Ã˜Âª'
 
     def __str__(self):
-        return f'قیمت اشتراک: {self.subscription_price} تومان'
+        return f'Ã™â€šÃ›Å’Ã™â€¦Ã˜Âª Ã˜Â§Ã˜Â´Ã˜ÂªÃ˜Â±Ã˜Â§ÃšÂ©: {self.subscription_price} Ã˜ÂªÃ™Ë†Ã™â€¦Ã˜Â§Ã™â€ '
 
 
 auditlog.register(Profile)

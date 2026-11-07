@@ -50,7 +50,10 @@ urlpatterns = [
     # بخش خرید و سفارشات (Checkout)
     path('checkout/<int:product_id>/', views.checkout, name='checkout'),
     path('payment/<int:order_id>/', views.payment_page, name='payment_page'),
+    path('order/status/<str:tracking_code>/', views.order_status, name='order_status'),
     path('orders/update-status/<int:order_id>/<str:status>/', views.update_order_status, name='update_order_status'),
+    path('orders/deliver/<int:order_id>/', views.deliver_order, name='deliver_order'),
+    path('orders/delete/<int:order_id>/', views.delete_order, name='delete_order'),
 
     # بخش پروفایل عمومی
     path('u/<str:username>/', views.public_profile, name='public_profile'),

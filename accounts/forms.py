@@ -1,4 +1,4 @@
-﻿from django import forms
+from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import (
@@ -167,3 +167,12 @@ class OrderReceiptForm(forms.ModelForm):
             if not (name.endswith('.jpg') or name.endswith('.jpeg') or name.endswith('.png') or name.endswith('.webp')):
                 raise forms.ValidationError('فقط فرمت‌های JPG، PNG و WebP پشتیبانی می‌شن')
         return image
+
+
+class DeliverOrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['digital_file']
+        widgets = {
+            'digital_file': forms.FileInput(),
+        }

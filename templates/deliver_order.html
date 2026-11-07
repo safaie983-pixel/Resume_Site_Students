@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}تحویل محصول{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto;">
+    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 30px;">
+        <h1 style="font-size: 22px; color: #10b981; margin-bottom: 10px;">📤 آپلود فایل محصول</h1>
+        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 25px;">
+            شما در حال آپلود فایل برای سفارش <strong style="color: #e2e8f0;">{{ order.product.name }}</strong> هستید.
+            این فایل پس از آپلود در اختیار خریدار ({{ order.first_name }} {{ order.last_name }}) قرار می‌گیرد.
+        </p>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 10px; color: #cbd5e1; font-size: 14px;">فایل محصول (مثلاً فایل ZIP یا PDF):</label>
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px dashed rgba(255,255,255,0.2);">
+                    {{ form.digital_file }}
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button type="submit" style="flex: 1; background: linear-gradient(135deg, #10b981, #059669); font-size: 16px;">آپلود و تحویل به خریدار</button>
+                <a href="{% url 'manage_mini_site' %}" class="btn" style="flex: 1; text-align: center; background: rgba(100, 116, 139, 0.3); box-shadow: none; text-decoration: none; padding: 12px; border-radius: 8px;">انصراف</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
