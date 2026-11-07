@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils import timezone
 from datetime import timedelta
 from .models import (
-    Profile, Skill, Experience, Education, Project, Certificate, 
+    Profile, Skill, Experience, Education, Project, Product, Order, Certificate, 
     CustomLink, Subscription, PaymentReceipt, Message, JobPost, SiteSetting
 )
 
@@ -24,7 +24,7 @@ class EducationInline(admin.TabularInline):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'full_name', 'job_title', 'location', 'theme', 'created_at')
+    list_display = ('user', 'full_name', 'job_title', 'location', 'theme', 'created_at', 'card_number')
     search_fields = ('user__username', 'full_name', 'job_title')
     inlines = [SkillInline, ExperienceInline, EducationInline]
 
@@ -52,6 +52,29 @@ class EducationAdmin(admin.ModelAdmin):
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'profile', 'technologies', 'created_at')
     search_fields = ('title', 'technologies')
+
+
+# ==================== بخش جدید: محصولات و سفارشات ====================
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'profile', 'price', 'created_at')
+    search_fields = ('name', 'profile__user__username')
+    list_filter = ('created_at',)
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('tracking_code', 'product', 'get_buyer_name', 'seller', 'status', 'created_at')
+    search_fields = ('tracking_code', 'first_name', 'last_name', 'phone', 'product__name')
+    list_filter = ('status', 'created_at')
+    readonly_fields = ('tracking_code',)
+
+    def get_buyer_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}"
+    get_buyer_name.short_description = 'نام خریدار'
+
+# =====================================================================
 
 
 @admin.register(Certificate)
