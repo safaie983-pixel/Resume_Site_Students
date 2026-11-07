@@ -29,7 +29,6 @@ class Profile(models.Model):
     
     theme = models.CharField(max_length=20, choices=THEME_CHOICES, default='dark', verbose_name='قالب سایت شخصی')
     
-    # فیلد جدید: آیا کاربر مینی‌سایت خود را ساخته است یا خیر؟
     has_mini_site = models.BooleanField(default=False, verbose_name='مینی‌سایت ساخته شده است')
     
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
@@ -104,6 +103,23 @@ class Project(models.Model):
 
     def __str__(self):
         return f'{self.title} - {self.profile.user.username}'
+
+
+class Product(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='products')
+    name = models.CharField(max_length=150, verbose_name='نام محصول')
+    description = models.TextField(blank=True, verbose_name='توضیحات')
+    price = models.PositiveIntegerField(default=0, verbose_name='قیمت (تومان)')
+    image = models.ImageField(upload_to='products/', blank=True, null=True, verbose_name='عکس محصول')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
+
+    class Meta:
+        verbose_name = 'محصول'
+        verbose_name_plural = 'محصولات'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.name} - {self.profile.user.username}'
 
 
 class Certificate(models.Model):
@@ -224,6 +240,7 @@ auditlog.register(Skill)
 auditlog.register(Experience)
 auditlog.register(Education)
 auditlog.register(Project)
+auditlog.register(Product)
 auditlog.register(Certificate)
 auditlog.register(CustomLink)
 auditlog.register(Subscription)

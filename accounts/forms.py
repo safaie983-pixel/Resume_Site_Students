@@ -2,7 +2,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import (
-    Profile, Skill, Experience, Education, Project, Certificate, 
+    Profile, Skill, Experience, Education, Project, Product, Certificate, 
     CustomLink, PaymentReceipt, JobPost
 )
 
@@ -67,6 +67,25 @@ class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ['title', 'description', 'link', 'image', 'technologies']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+        }
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if image and hasattr(image, 'size') and image.size > 0:
+            if image.size > 5 * 1024 * 1024:
+                raise forms.ValidationError('حجم عکس نباید بیشتر از ۵ مگابایت باشه')
+            name = image.name.lower()
+            if not (name.endswith('.jpg') or name.endswith('.jpeg') or name.endswith('.png') or name.endswith('.webp')):
+                raise forms.ValidationError('فقط فرمت‌های JPG، PNG و WebP پشتیبانی می‌شن')
+        return image
+
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'price', 'image']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
         }

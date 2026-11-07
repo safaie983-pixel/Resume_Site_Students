@@ -52,6 +52,10 @@
         <div style="font-size: 26px; font-weight: 800; color: #4ade80;">{{ stats.projects_count }}</div>
         <div style="color: #cbd5e1; font-size: 12px; margin-top: 5px;">پروژه</div>
     </div>
+    <div style="background: rgba(99, 102, 241, 0.12); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 16px; padding: 18px; text-align: center;">
+        <div style="font-size: 26px; font-weight: 800; color: #818cf8;">{{ stats.products_count }}</div>
+        <div style="color: #cbd5e1; font-size: 12px; margin-top: 5px;">محصول</div>
+    </div>
     <div style="background: rgba(168, 85, 247, 0.12); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 16px; padding: 18px; text-align: center;">
         <div style="font-size: 26px; font-weight: 800; color: #d8b4fe;">{{ stats.certificates_count }}</div>
         <div style="color: #cbd5e1; font-size: 12px; margin-top: 5px;">گواهی‌نامه</div>
@@ -135,6 +139,35 @@
         </div>
     {% else %}
         <p style="color: #64748b;">هنوز پروژه‌ای اضافه نکردی.</p>
+    {% endif %}
+</div>
+
+<!-- بخش جدید: محصولات -->
+<div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 16px; padding: 25px; margin-bottom: 30px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 22px; margin: 0;">🛒 محصولات</h2>
+        <a href="{% url 'add_product' %}" class="btn" style="background: linear-gradient(135deg, #6366f1, #4f46e5); font-size: 13px; padding: 8px 16px;">+ افزودن محصول</a>
+    </div>
+    {% if products %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px;">
+        {% for product in products %}
+        <div style="background: rgba(15, 23, 42, 0.5); padding: 18px; border-radius: 12px; border-right: 3px solid #6366f1;">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 12px;">
+            {% endif %}
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                <strong style="color: #818cf8; font-size: 15px;">{{ product.name }}</strong>
+                <a href="{% url 'delete_product' product.pk %}" style="color: #f87171; font-size: 12px;">حذف</a>
+            </div>
+            <div style="color: #34d399; font-size: 13px; font-weight: bold; margin-bottom: 6px;">💰 {{ product.price }} تومان</div>
+            {% if product.description %}
+            <p style="font-size: 13px; color: #cbd5e1;">{{ product.description|truncatewords:20 }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: #64748b;">هنوز محصولی اضافه نکردی.</p>
     {% endif %}
 </div>
 

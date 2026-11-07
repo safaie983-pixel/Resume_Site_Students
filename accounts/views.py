@@ -12,10 +12,10 @@ import json
 
 from .forms import (
     RegisterForm, ProfileForm, SkillForm, ExperienceForm, EducationForm, 
-    ProjectForm, CertificateForm, PaymentReceiptForm, JobPostForm, CustomLinkForm
+    ProjectForm, ProductForm, CertificateForm, PaymentReceiptForm, JobPostForm, CustomLinkForm
 )
 from .models import (
-    Profile, Skill, Experience, Education, Project, Certificate, 
+    Profile, Skill, Experience, Education, Project, Product, Certificate, 
     Subscription, PaymentReceipt, Message, JobPost, SiteSetting, CustomLink
 )
 from .pdf_utils import render_to_pdf
@@ -96,6 +96,7 @@ def dashboard(request):
         'experiences': profile.experiences.all(),
         'educations': profile.educations.all(),
         'projects': profile.projects.all(),
+        'products': profile.products.all(),
         'certificates': profile.certificates.all(),
         'subscription': subscription,
         'is_sub_active': is_sub_active,
@@ -104,6 +105,7 @@ def dashboard(request):
             'experiences_count': profile.experiences.count(),
             'educations_count': profile.educations.count(),
             'projects_count': profile.projects.count(),
+            'products_count': profile.products.count(),
             'certificates_count': profile.certificates.count(),
             'profile_completion': calculate_profile_completion(profile),
         }
@@ -164,6 +166,20 @@ def add_project(request):
     return render(request, 'add_item.html', {'form': form, 'title': 'افزودن پروژه جدید'})
 
 @login_required
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.profile = request.user.profile
+            product.save()
+            messages.success(request, 'محصول جدید با موفقیت اضافه شد.')
+            return redirect('dashboard')
+    else: 
+        form = ProductForm()
+    return render(request, 'add_item.html', {'form': form, 'title': 'افزودن محصول جدید'})
+
+@login_required
 def add_certificate(request):
     if request.method == 'POST':
         form = CertificateForm(request.POST)
@@ -181,6 +197,11 @@ def delete_experience(request, pk): Experience.objects.filter(pk=pk, profile=req
 def delete_education(request, pk): Education.objects.filter(pk=pk, profile=request.user.profile).delete(); return redirect('dashboard')
 @login_required
 def delete_project(request, pk): Project.objects.filter(pk=pk, profile=request.user.profile).delete(); return redirect('dashboard')
+@login_required
+def delete_product(request, pk): 
+    Product.objects.filter(pk=pk, profile=request.user.profile).delete()
+    messages.success(request, 'محصول با موفقیت حذف شد.')
+    return redirect('dashboard')
 @login_required
 def delete_certificate(request, pk): Certificate.objects.filter(pk=pk, profile=request.user.profile).delete(); return redirect('dashboard')
 
@@ -433,6 +454,7 @@ def public_mini_site(request, username):
         'experiences': profile.experiences.all(),
         'educations': profile.educations.all(),
         'projects': profile.projects.all(),
+        'products': profile.products.all(),
         'certificates': profile.certificates.all(),
     }
     return render(request, 'mini_site_public.html', context)

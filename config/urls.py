@@ -18,6 +18,7 @@ urlpatterns = [
     path('dashboard/add-experience/', views.add_experience, name='add_experience'),
     path('dashboard/add-education/', views.add_education, name='add_education'),
     path('dashboard/add-project/', views.add_project, name='add_project'),
+    path('dashboard/add-product/', views.add_product, name='add_product'),
     path('dashboard/add-certificate/', views.add_certificate, name='add_certificate'),
     
     # بخش حذف آیتم‌ها
@@ -25,6 +26,7 @@ urlpatterns = [
     path('dashboard/delete-experience/<int:pk>/', views.delete_experience, name='delete_experience'),
     path('dashboard/delete-education/<int:pk>/', views.delete_education, name='delete_education'),
     path('dashboard/delete-project/<int:pk>/', views.delete_project, name='delete_project'),
+    path('dashboard/delete-product/<int:pk>/', views.delete_product, name='delete_product'),
     path('dashboard/delete-certificate/<int:pk>/', views.delete_certificate, name='delete_certificate'),
     
     # بخش اشتراک
