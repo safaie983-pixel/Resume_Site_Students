@@ -79,6 +79,16 @@
     .theme-ocean .skill-bar-fill { background: #38bdf8; }
     .theme-sunset .skill-bar-fill { background: #fbbf24; }
     .theme-forest .skill-bar-fill { background: #34d399; }
+
+    /* استایل دکمه خرید */
+    .buy-btn {
+        display: block; text-align: center; background: linear-gradient(135deg, #8b5cf6, #6366f1); color: #fff !important;
+        padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px;
+        transition: all 0.3s; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); margin-top: auto;
+    }
+    .buy-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5); background: linear-gradient(135deg, #7c3aed, #4f46e5); }
+    .theme-neon .buy-btn { border: 1px solid #0ff; box-shadow: 0 0 10px #0ff; background: transparent; color: #0ff !important; text-shadow: 0 0 5px #0ff; }
+    .theme-neon .buy-btn:hover { background: rgba(0,255,255,0.1); box-shadow: 0 0 20px #0ff; }
 </style>
 
 <script>
@@ -161,6 +171,33 @@
             {% if project.technologies %}<div style="font-size: 12px; opacity: 0.8; margin-bottom: 5px;">🛠 {{ project.technologies }}</div>{% endif %}
             {% if project.description %}<p style="font-size: 13px; opacity: 0.9;">{{ project.description }}</p>{% endif %}
             {% if project.link %}<a href="{{ project.link }}" target="_blank" style="font-size: 13px; color: inherit; text-decoration: underline;">مشاهده پروژه ←</a>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- محصولات فروشگاه -->
+    {% if products %}
+    <div class="section-title">🛒 محصولات فروشگاه</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+        {% for product in products %}
+        <div class="item-card" style="display: flex; flex-direction: column; padding: 15px; border-right: none;">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 12px;">
+            {% else %}
+                <div style="width: 100%; height: 160px; background: rgba(128,128,128,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; opacity: 0.6;">بدون تصویر</div>
+            {% endif %}
+            
+            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;">{{ product.name }}</div>
+            <div style="font-size: 14px; font-weight: bold; color: #10b981; margin-bottom: 8px;">💰 {{ product.price }} تومان</div>
+            
+            {% if product.description %}
+                <p style="font-size: 13px; opacity: 0.9; margin-bottom: 15px; flex-grow: 1;">{{ product.description|truncatewords:15 }}</p>
+            {% else %}
+                <div style="flex-grow: 1; margin-bottom: 15px;"></div>
+            {% endif %}
+            
+            <a href="{% url 'checkout' product.id %}" class="buy-btn">🛒 خرید محصول</a>
         </div>
         {% endfor %}
     </div>
