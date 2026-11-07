@@ -174,7 +174,7 @@ def add_product(request):
             product.profile = request.user.profile
             product.save()
             messages.success(request, 'محصول جدید با موفقیت اضافه شد.')
-            return redirect('dashboard')
+            return redirect('manage_mini_site')  # هدایت به صفحه مدیریت مینی‌سایت
     else: 
         form = ProductForm()
     return render(request, 'add_item.html', {'form': form, 'title': 'افزودن محصول جدید'})
@@ -197,11 +197,13 @@ def delete_experience(request, pk): Experience.objects.filter(pk=pk, profile=req
 def delete_education(request, pk): Education.objects.filter(pk=pk, profile=request.user.profile).delete(); return redirect('dashboard')
 @login_required
 def delete_project(request, pk): Project.objects.filter(pk=pk, profile=request.user.profile).delete(); return redirect('dashboard')
+
 @login_required
 def delete_product(request, pk): 
     Product.objects.filter(pk=pk, profile=request.user.profile).delete()
     messages.success(request, 'محصول با موفقیت حذف شد.')
-    return redirect('dashboard')
+    return redirect('manage_mini_site')  # هدایت به صفحه مدیریت مینی‌سایت
+
 @login_required
 def delete_certificate(request, pk): Certificate.objects.filter(pk=pk, profile=request.user.profile).delete(); return redirect('dashboard')
 
@@ -418,6 +420,7 @@ def manage_mini_site(request):
         'profile': profile,
         'links': links,
         'form': form,
+        'products': profile.products.all(), # اضافه شدن محصولات به صفحه مدیریت مینی‌سایت
     }
     return render(request, 'manage_mini_site.html', context)
 

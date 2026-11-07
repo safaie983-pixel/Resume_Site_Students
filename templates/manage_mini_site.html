@@ -108,7 +108,7 @@
     </div>
 
     <!-- لیست لینک‌های فعلی -->
-    <div style="margin-top: 30px;">
+    <div style="margin-top: 30px; margin-bottom: 40px;">
         <h2 style="font-size: 20px; margin-bottom: 20px;">لینک‌های فعلی شما</h2>
         {% if links %}
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">
@@ -126,6 +126,49 @@
             <p style="color: #64748b;">هنوز هیچ لینکی اضافه نکرده‌اید.</p>
         {% endif %}
     </div>
+
+    <!-- بخش جدید: مدیریت محصولات فروشگاه -->
+    <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 16px; padding: 25px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <h2 style="font-size: 20px; margin: 0;">🛒 محصولات فروشگاه شما</h2>
+                <p style="color: #94a3b8; font-size: 13px; margin-top: 5px;">این محصولات در صفحه مینی‌سایت شما به عنوان ویترین فروشگاه نمایش داده می‌شوند.</p>
+            </div>
+            <a href="{% url 'add_product' %}" class="btn" style="background: linear-gradient(135deg, #6366f1, #4f46e5); font-size: 13px; padding: 10px 20px; text-decoration: none; margin: 0;">+ افزودن محصول جدید</a>
+        </div>
+        
+        {% if products %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;">
+                {% for product in products %}
+                <div style="background: rgba(15, 23, 42, 0.6); border-radius: 12px; overflow: hidden; border: 1px solid rgba(99, 102, 241, 0.2); display: flex; flex-direction: column;">
+                    <!-- عکس محصول در بالا -->
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 160px; object-fit: cover; border-bottom: 1px solid rgba(99, 102, 241, 0.2);">
+                    {% else %}
+                        <div style="width: 100%; height: 160px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: #64748b; border-bottom: 1px solid rgba(99, 102, 241, 0.2);">بدون تصویر</div>
+                    {% endif %}
+                    
+                    <!-- نام، توضیحات و قیمت در پایین -->
+                    <div style="padding: 15px; flex-grow: 1; display: flex; flex-direction: column;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                            <strong style="color: #818cf8; font-size: 15px;">{{ product.name }}</strong>
+                            <a href="{% url 'delete_product' product.pk %}" style="color: #f87171; font-size: 16px; text-decoration: none; padding: 0 5px;" title="حذف محصول">✕</a>
+                        </div>
+                        <div style="color: #34d399; font-size: 14px; font-weight: bold; margin-bottom: 8px;">💰 {{ product.price }} تومان</div>
+                        {% if product.description %}
+                            <p style="font-size: 13px; color: #cbd5e1; margin-top: auto; line-height: 1.5;">{{ product.description|truncatewords:15 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 30px; background: rgba(15, 23, 42, 0.4); border-radius: 12px; border: 1px dashed rgba(99, 102, 241, 0.3);">
+                <p style="color: #64748b; margin: 0;">هنوز هیچ محصولی برای فروشگاه خود اضافه نکرده‌اید.</p>
+            </div>
+        {% endif %}
+    </div>
+
 {% endif %}
 
 <script>
